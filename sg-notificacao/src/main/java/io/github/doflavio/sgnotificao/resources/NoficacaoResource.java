@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RefreshScope
 @RestController
-@RequestMapping(value = "/notificacoes")
+@RequestMapping(value = "/sg-notificacao")
 public class NoficacaoResource {
 	
 	private static Logger logger = LoggerFactory.getLogger(NoficacaoResource.class);
