@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-//@EnableDiscoveryClient
+@EnableDiscoveryClient
 @SpringBootApplication
 public class SgUserApplication {
 	
