@@ -16,13 +16,6 @@ public class SgUserApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SgUserApplication.class, args);
 	}
-	
-	/*
-	@Override
-	public void run(String... args) throws Exception {
-		System.out.println("BCRYPT = " + passwordEncoder.encode("123456"));		
-	}
-	*/
 
 }
 

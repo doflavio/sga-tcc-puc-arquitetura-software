@@ -25,6 +25,8 @@ public class ApiGatewayConfiguration {
 					.uri("http://httpbin.org:80"))
 			.route(p -> p.path("/sg-notificacao/**")
 					.uri("lb://sg-notificacao"))
+			.route(p -> p.path("/sg-user/**")
+					.uri("lb://sg-user"))
 			.build();
 				
 	}
