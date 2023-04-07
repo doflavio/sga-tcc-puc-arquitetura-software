@@ -13,7 +13,7 @@ import io.github.doflavio.sguser.repositories.UserRepository;
 
 
 @RestController
-@RequestMapping(value = "/users")
+@RequestMapping(value = "/sg-user/users")
 public class UserResource {
 	
 	@Autowired
