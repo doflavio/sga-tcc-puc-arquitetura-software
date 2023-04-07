@@ -1,3 +1,4 @@
+/*
 package io.github.doflavio.sgapigateway.configuration;
 
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -10,11 +11,11 @@ public class ApiGatewayConfiguration {
 	
 	@Bean
 	public RouteLocator gatewayRouter(RouteLocatorBuilder builder) {
-		/*
+		
 		Function<PredicateSpec,Buildable<Route>> function = 
 				p -> p.path("/get")
 			.uri("http://httpbin.org:80");
-		return builder.routes().route(function).build();*/
+		return builder.routes().route(function).build();
 		
 				
 			return builder.routes()
@@ -32,3 +33,4 @@ public class ApiGatewayConfiguration {
 	}
 
 }
+*/
