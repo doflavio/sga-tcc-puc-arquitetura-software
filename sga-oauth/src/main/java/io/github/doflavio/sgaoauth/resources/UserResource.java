@@ -12,13 +12,13 @@ import io.github.doflavio.sgaoauth.entities.User;
 import io.github.doflavio.sgaoauth.services.UserService;
 
 @RestController()
-@RequestMapping(value = "sg-oauth")
+@RequestMapping(value = "/users")
 public class UserResource {
 
 	@Autowired
 	private UserService service;
 	
-	@GetMapping(value="/users/search")
+	@GetMapping(value="/search")
 	public ResponseEntity<User> findByEmail(@RequestParam String email){
 		try {
 			User user = service.findByEmail(email);

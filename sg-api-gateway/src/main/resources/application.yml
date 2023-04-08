@@ -29,10 +29,10 @@ spring:
         uri: lb://sg-user
         predicates:
         - Path=/sg-user/**
-      - id: sg-oauth
-        uri: lb://sg-oauth
+      - id: sga-oauth
+        uri: lb://sga-oauth
         predicates:
-        - Path=/sg-oauth/**
+        - Path=/sga-oauth/**
       - id: sg-notificacao
         uri: lb://sg-notificacao
         predicates:
@@ -40,7 +40,18 @@ spring:
   config:
     import: optional:configserver:http://localhost:8888
   profiles:
-    active: test  
+    active: test
+  #main: web-application-type: none 
+    
+oauth:
+  client:
+    name: myappname123
+    secret: myappsecret123
+
+jwt:
+  secret: MY-SECRET   
+    
+
     
 #Olhar se precisa    
 #zuul.routes.oauth.sensitive-headers=Cookie,Set-Cookie
