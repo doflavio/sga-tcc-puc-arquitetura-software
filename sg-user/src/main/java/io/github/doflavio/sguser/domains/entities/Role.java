@@ -1,4 +1,4 @@
-package io.github.doflavio.sguser.entities;
+package io.github.doflavio.sguser.domains.entities;
 
 import java.io.Serializable;
 
