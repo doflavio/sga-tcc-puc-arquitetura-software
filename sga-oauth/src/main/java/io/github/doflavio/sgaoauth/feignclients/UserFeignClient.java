@@ -11,10 +11,10 @@ import io.github.doflavio.sgaoauth.entities.User;
 
 
 @Component
-@FeignClient(name = "sg-user", path = "")
+@FeignClient(name = "sg-user", path = "users")
 public interface UserFeignClient {
 
-	@GetMapping(value = "/users/search")
+	@GetMapping(value = "/search")
 	ResponseEntity <User> findByEmail(@RequestParam String email);
 
 }
