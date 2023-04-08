@@ -1,4 +1,5 @@
-package io.github.doflavio.sgoauth.config;
+package io.github.doflavio.sgaoauth.config;
+
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

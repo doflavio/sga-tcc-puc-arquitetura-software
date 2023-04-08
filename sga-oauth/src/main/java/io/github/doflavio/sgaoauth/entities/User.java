@@ -1,4 +1,4 @@
-package io.github.doflavio.sgoauth.entities;
+package io.github.doflavio.sgaoauth.entities;
 
 import java.io.Serializable;
 import java.util.Collection;

@@ -1,4 +1,4 @@
-package io.github.doflavio.sgoauth.services;
+package io.github.doflavio.sgaoauth.services;
 
 
 import org.slf4j.Logger;
@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
-import io.github.doflavio.sgoauth.entities.User;
-import io.github.doflavio.sgoauth.feignclients.UserFeignClient;
+import io.github.doflavio.sgaoauth.entities.User;
+import io.github.doflavio.sgaoauth.feignclients.UserFeignClient;
 
+@Service
 public class UserService implements UserDetailsService{
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserService.class);
