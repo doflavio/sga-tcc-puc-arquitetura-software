@@ -21,9 +21,12 @@ public class UserResource {
 	@GetMapping(value="/search")
 	public ResponseEntity<User> findByEmail(@RequestParam String email){
 		try {
+			System.out.println("Estou aqui no buscar por email do oauth");
 			User user = service.findByEmail(email);
 			return ResponseEntity.ok(user);
 		} catch (IllegalArgumentException e) {
+			System.out.println("Erro: " + e.getMessage());
+			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 		
