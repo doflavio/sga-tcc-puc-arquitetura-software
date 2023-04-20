@@ -1,4 +1,5 @@
-package io.github.doflavio.sgoauth.config;
+/*package io.github.doflavio.sgoauth.config;
+
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -29,4 +30,4 @@ public class AppConfig {
 	public JwtTokenStore tokenStore() {
 		return new JwtTokenStore(accessTokenConverter());
 	}
-}
+}*/

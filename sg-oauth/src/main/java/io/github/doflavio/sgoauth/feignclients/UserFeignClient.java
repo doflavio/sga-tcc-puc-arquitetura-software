@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import io.github.doflavio.sgoauth.entities.User;
 
+
+
 @Component
-@FeignClient(name = "sg-user", path = "/sg-user/users")
+@FeignClient(name = "sg-user", path = "users")
 public interface UserFeignClient {
 
 	@GetMapping(value = "/search")

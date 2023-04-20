@@ -1,76 +1,77 @@
-
 package io.github.doflavio.sgoauth.config;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
+import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm;
 import org.springframework.security.web.SecurityFilterChain;
 
-/*
+import io.github.doflavio.sgoauth.security.jwt.JwtConfigurer;
+import io.github.doflavio.sgoauth.security.jwt.JwtTokenProvider;
+
+
+
 @EnableWebSecurity
-public class SecurityConfig {
+@Configuration
+public class SecurityConfig {	
 
 	@Autowired
-	private BCryptPasswordEncoder passwordEnconder;
-	
-	@Autowired
-	private UserDetailsService userDetailsService;
-
-	
-	@Override
-	@Autowired
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEnconder);
-	}
-	
-
+	private JwtTokenProvider tokenProvider;
 	
 	@Bean
-	public AuthenticationManager authenticationManager(
-	        AuthenticationConfiguration authConfig) throws Exception {
-	    return authConfig.getAuthenticationManager();
+	PasswordEncoder passwordEncoder() {
+		Map<String, PasswordEncoder> encoders = new HashMap<>();
+				
+		Pbkdf2PasswordEncoder pbkdf2Encoder = new Pbkdf2PasswordEncoder("", 8, 185000, SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256);
+		encoders.put("pbkdf2", pbkdf2Encoder);
+		DelegatingPasswordEncoder passwordEncoder = new DelegatingPasswordEncoder("pbkdf2", encoders);
+		passwordEncoder.setDefaultPasswordEncoderForMatches(pbkdf2Encoder);
+		return passwordEncoder;
 	}
 	
-	
-}*/
-
-
-@Configuration
-public class SecurityConfig {
-
-    AuthenticationManager authenticationManager;
-
-    @Autowired
-	private BCryptPasswordEncoder passwordEnconder;
-	
-	@Autowired
-	private UserDetailsService userDetailsService;
-
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEnconder);
-        authenticationManager = authenticationManagerBuilder.build();
-        
-
-        http.csrf()
-        	.disable()
-        	.cors()
-        	.disable().authorizeHttpRequests().requestMatchers("/api/v1/account/register", "/api/v1/account/auth").permitAll()
-            .anyRequest().authenticated()
-            .and()
-            .authenticationManager(authenticationManager)
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        return http.build();
+    AuthenticationManager authenticationManagerBean(
+    		AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .httpBasic().disable()
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(
+            		session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(
+                    authorizeHttpRequests -> authorizeHttpRequests
+                        .requestMatchers(
+							"/auth/signin",
+							"/auth/refresh/**",
+                    		"/swagger-ui/**",
+                    		"/v3/api-docs/**",
+                    		"/h2-console/**"
+                		).permitAll()
+                        .requestMatchers("/api/**").authenticated()
+                        .requestMatchers("/users").denyAll()
+                )
+                .cors()
+                .and()
+                .apply(new JwtConfigurer(tokenProvider))
+                .and()
+                .build();
+ 
+    }
 }
-
-//https://stackoverflow.com/questions/72381114/spring-security-upgrading-the-deprecated-websecurityconfigureradapter-in-spring

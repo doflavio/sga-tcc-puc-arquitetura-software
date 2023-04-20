@@ -1,4 +1,6 @@
+/*
 package io.github.doflavio.sgoauth.config;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,4 +62,4 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	
 	
 
-}
+}*/
