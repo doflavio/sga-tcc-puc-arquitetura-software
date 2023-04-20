@@ -1,10 +1,10 @@
-package io.github.doflavio.sgnotificao;
+package io.github.doflavio.sgnotificacao;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SgNotificaoApplicationTests {
+class SgNotificacaoApplicationTests {
 
 	@Test
 	void contextLoads() {
