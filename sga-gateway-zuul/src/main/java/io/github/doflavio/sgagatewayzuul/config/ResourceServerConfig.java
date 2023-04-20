@@ -26,7 +26,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
 	@Autowired
 	private JwtTokenStore tokenStore;
 	
-	private static final String[] PUBLIC = { "/sga-oauth/oauth/token","/sga-auth-authorization/login" };
+	private static final String[] PUBLIC = { "/sga-oauth/oauth/token","/sga-auth-authorization/login", "/sg-sensor/**", "/sg-notificacao/**","/sg-monitoramento-seguranca/**" };
 	
 	private static final String[] OPERATOR = { "/hr-worker/**"};
 	
