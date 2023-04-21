@@ -17,22 +17,31 @@ public class AreaDTO implements Serializable {
 	
 	private Integer id;
 	
-	//@NotBlank
-	//@NotNull(message = "O campo NOME é obrigatório")
+	@NotBlank(message = "O campo NOME deve ser informado")
+	@NotNull(message = "O campo NOME é obrigatório")
 	private String nome;
 	
-	//@NotBlank(message = "O campo LATITUDE não deve estar em branco")
-	//@NotNull(message = "O campo LATITUDE é obrigatório")
+	@NotNull(message = "O campo LATITUDE é obrigatório")
 	private Long latitude;
 	
-	//@NotBlank(message = "O campo LONGITUDE não deve estar em branco")
-	//@NotNull(message = "O campo LONGITUDE é obrigatório")
+	@NotNull(message = "O campo LONGITUDE é obrigatório")
 	private Long longitude;
 	
-	//@NotBlank
-	//@NotNull(message = "O campo DESCRICAO é obrigatório")
+	@NotBlank(message = "O campo DESCRICAO deve ser informado")
+	@NotNull(message = "O campo DESCRICAO é obrigatório")
 	private String descricao;
 	
 	private StatusEnum status;
+	
+	public Area toArea() {
+		return Area
+				.builder()
+				.id(id)
+				.nome(nome)
+				.latitude(latitude)
+				.longitude(longitude)
+				.descricao(descricao)
+				.build();
+	}
 	
 }
