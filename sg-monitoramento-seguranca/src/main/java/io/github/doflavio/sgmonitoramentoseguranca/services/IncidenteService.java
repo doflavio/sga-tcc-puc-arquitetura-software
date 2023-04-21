@@ -15,7 +15,7 @@ import io.github.doflavio.sgmonitoramentoseguranca.repositories.AreaRepository;
 import jakarta.validation.Valid;
 
 @Service
-public class AreaService {
+public class IncidenteService {
 
 	@Autowired
 	private AreaRepository repository;
@@ -31,7 +31,7 @@ public class AreaService {
 
 	public Area create(AreaDTO objDTO) {
 		
-		Area newObj = objDTO.toArea();
+		Area newObj = pareArea(objDTO);
 		newObj.setDataHoraCadastro(LocalDateTime.now());
 		newObj.setStatus(StatusEnum.ATIVO);
 		
@@ -41,15 +41,14 @@ public class AreaService {
 	public Area update(Integer id, @Valid AreaDTO objDTO) {
 		objDTO.setId(id);
 		Area oldObj = findById(id);
-		objDTO.setStatus(oldObj.getStatus());
-		oldObj = areaAtualizada(oldObj,objDTO);
+		oldObj = pareArea(objDTO);
 		return repository.save(oldObj);
 	}
 
 	public void delete(Integer id) {
 		findById(id);
 		
-		//TODO: Verificar se áreas já associdado algum status
+		//TODO: Verificar se áres já associdado algum status
 		//Verificar se ao invés de deletar, remover lógicamente = Status removido
 		repository.deleteById(id);
 	}
@@ -70,13 +69,14 @@ public class AreaService {
 		return repository.save(oldObj);
 	}
 	
-	private Area areaAtualizada(Area area,AreaDTO objDTO) {
-		area.setNome(objDTO.getNome());
-		area.setDescricao(objDTO.getDescricao());
-		area.setLatitude(objDTO.getLatitude());
-		area.setLongitude(objDTO.getLongitude());
-		area.setDescricao(objDTO.getDescricao());
-		return area;
+	private Area pareArea(AreaDTO objDTO) {
+		return Area.builder()
+				.nome(objDTO.getNome())
+				.descricao(objDTO.getDescricao())
+				.latitude(objDTO.getLatitude())
+				.longitude(objDTO.getLongitude())
+				.descricao(objDTO.getDescricao())
+				.build();
 	}
 	
 }
