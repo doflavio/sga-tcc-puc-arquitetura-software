@@ -2,6 +2,7 @@ package io.github.doflavio.sgmonitoramentoseguranca.domains.entities;
 
 import java.io.Serializable;
 
+import io.github.doflavio.sgmonitoramentoseguranca.domains.dtos.AtividadeDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,4 +25,12 @@ public class Atividade implements Serializable{
 	private Integer id;
 	
 	private String descricao;
+	
+	public AtividadeDTO toAtividadeDTO() {
+		return AtividadeDTO
+				.builder()
+				.id(id)
+				.descricao(descricao)
+				.build();
+	}
 }
