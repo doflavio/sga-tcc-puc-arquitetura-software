@@ -22,7 +22,6 @@ import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Area;
 import io.github.doflavio.sgmonitoramentoseguranca.services.AreaService;
 import jakarta.validation.Valid;
 
-
 @RestController
 @RequestMapping(value = "/areas")
 public class AreaResource {
@@ -33,13 +32,13 @@ public class AreaResource {
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<AreaDTO> findById(@PathVariable Integer id) {
 		Area obj = service.findById(id);
-		return ResponseEntity.ok().body(parseArea(obj));
+		return ResponseEntity.ok().body(obj.toAreaDTO());
 	}
 
 	@GetMapping
 	public ResponseEntity<List<AreaDTO>> findAll() {
 		List<Area> list = service.findAll();
-		List<AreaDTO> listDTO = list.stream().map(obj -> parseArea(obj)).collect(Collectors.toList());
+		List<AreaDTO> listDTO = list.stream().map(obj -> obj.toAreaDTO()).collect(Collectors.toList());
 		return ResponseEntity.ok().body(listDTO);
 	}
 
@@ -55,7 +54,7 @@ public class AreaResource {
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<AreaDTO> update(@PathVariable Integer id, @Valid @RequestBody AreaDTO objDTO) {
 		Area obj = service.update(id, objDTO);
-		return ResponseEntity.ok().body(parseArea(obj));
+		return ResponseEntity.ok().body(obj.toAreaDTO());
 	}
 	
 	//@PreAuthorize("hasAnyRole('ADMIN')")
@@ -69,19 +68,6 @@ public class AreaResource {
 	public ResponseEntity<AreaDTO> desativar(@PathVariable Integer id){
 		service.desativar(id);
 		return ResponseEntity.noContent().build();
-	}
-	
-	public AreaDTO parseArea(Area area) {
-		return AreaDTO.builder()
-				.id(area.getId())
-				.nome(area.getNome())
-		        .latitude(area.getLatitude())
-		        .longitude(area.getLongitude())
-		        .descricao(area.getDescricao())
-		        .status(area.getStatus())
-				.build();
-		
-		
 	}
 	
 }
