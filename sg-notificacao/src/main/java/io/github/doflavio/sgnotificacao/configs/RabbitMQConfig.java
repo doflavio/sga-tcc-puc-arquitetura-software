@@ -10,13 +10,21 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 	
-	@Value("${spring.rabbitmq.queue}")
+	/*@Value("${spring.rabbitmq.queue}")
     private String queue;
 
     @Bean
     public Queue queue() {
         return new Queue(queue, true);
-    }
+    }*/
+	
+	@Value("${mq.queues.notificacao.incidente}")
+    private String filaNotificacaoIncidente;
+
+	@Bean
+	public Queue queueNotificacaoIncidente() {
+		return new Queue(filaNotificacaoIncidente,true);
+	}
 
     @Bean
     public Jackson2JsonMessageConverter messageConverter() {

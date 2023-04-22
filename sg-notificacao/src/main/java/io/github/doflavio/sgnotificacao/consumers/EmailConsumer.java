@@ -10,13 +10,13 @@ import io.github.doflavio.sgnotificacao.dtos.EmailDto;
 import io.github.doflavio.sgnotificacao.models.EmailModel;
 import io.github.doflavio.sgnotificacao.services.EmailService;
 
-@Component
+//@Component
 public class EmailConsumer {
 
     @Autowired
     EmailService emailService;
 
-    @RabbitListener(queues = "${spring.rabbitmq.queue}")
+    //@RabbitListener(queues = "${spring.rabbitmq.queue}")
     public void listen(@Payload EmailDto emailDto) {
         EmailModel emailModel = new EmailModel();
         BeanUtils.copyProperties(emailDto, emailModel);
