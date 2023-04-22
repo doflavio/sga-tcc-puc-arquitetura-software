@@ -24,12 +24,12 @@ public enum TipoIncidente {
 		return descricao;
 	}
 	
-	public static CategoriaRiscoIncidente toEnum(Integer cod) {
+	public static TipoIncidente toEnum(Integer cod) {
 		if(cod == null) {
 			return null;
 		}
 		
-		for(CategoriaRiscoIncidente x : CategoriaRiscoIncidente.values()) {
+		for(TipoIncidente x : TipoIncidente.values()) {
 			if(cod.equals(x.getCodigo())) {
 				return x;
 			}

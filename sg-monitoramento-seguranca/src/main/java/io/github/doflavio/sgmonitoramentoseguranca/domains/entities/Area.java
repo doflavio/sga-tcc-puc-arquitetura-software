@@ -3,6 +3,9 @@ package io.github.doflavio.sgmonitoramentoseguranca.domains.entities;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import io.github.doflavio.sgmonitoramentoseguranca.domains.dtos.AreaDTO;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.StatusEnum;
 import jakarta.persistence.Entity;
@@ -30,6 +33,7 @@ public class Area implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+	
 	@NotBlank
 	@NotNull(message = "O campo NOME é obrigatório")
 	private String nome;
@@ -49,9 +53,15 @@ public class Area implements Serializable{
 	private StatusEnum status;
 	
 	private LocalDateTime dataHoraCadastro;
+	
+	@JsonInclude(Include.NON_NULL)
 	private LocalDateTime dataHoraDesativacao;
-	private LocalDateTime dataHoraRemocao;
-	private String descricaoRemocao;
+	
+	@JsonInclude(Include.NON_NULL)
+	private LocalDateTime dataHoraexclusao;
+	
+	@JsonInclude(Include.NON_NULL)
+	private String descricaoExclusao;
 	
 	public AreaDTO toAreaDTO() {
 		return AreaDTO.builder()
