@@ -22,7 +22,7 @@ public class AreaService {
 
 	public Area findById(Integer id) {
 		Optional<Area> obj = repository.findById(id);
-		return obj.orElseThrow(() -> new ObjectnotFoundException("Objeto não encontrado! Id: " + id));
+		return obj.orElseThrow(() -> new ObjectnotFoundException("Aárea não encontrada! Id: " + id));
 	}
 
 	public List<Area> findAll() {
@@ -57,8 +57,8 @@ public class AreaService {
 	public void removerLogicamente(Integer id) {
 		Area objRemover =  findById(id);
 		objRemover.setStatus(StatusEnum.REMOVIDO);
-		objRemover.setDataHoraRemocao(LocalDateTime.now());
-		objRemover.setDescricaoRemocao("REMOÇÃO LOGICA - TESTE");
+		objRemover.setDataHoraexclusao(LocalDateTime.now());
+		objRemover.setDescricaoExclusao("REMOÇÃO LOGICA - TESTE");
 		
 		repository.save(objRemover);
 	}
