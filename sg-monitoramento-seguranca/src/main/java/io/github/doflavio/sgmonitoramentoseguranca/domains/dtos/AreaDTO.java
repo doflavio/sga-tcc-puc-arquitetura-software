@@ -1,8 +1,11 @@
 package io.github.doflavio.sgmonitoramentoseguranca.domains.dtos;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Area;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Impactado;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.StatusEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -32,6 +35,8 @@ public class AreaDTO implements Serializable {
 	private String descricao;
 	
 	private StatusEnum status;
+	
+	private List<Impactado> impactados;
 	
 	public Area toArea() {
 		return Area

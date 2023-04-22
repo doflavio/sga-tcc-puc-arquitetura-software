@@ -35,6 +35,20 @@ public enum TipoIncidente {
 			}
 		}
 		
-		throw new IllegalArgumentException("Status inválido");
+		throw new IllegalArgumentException("TipoIncidente inválido");
+	}
+	
+	public static TipoIncidente toEnum(String descricao) {
+		if(descricao == null) {
+			return null;
+		}
+		
+		for(TipoIncidente x : TipoIncidente.values()) {
+			if(descricao.equals(x.getDescricao())) {
+				return x;
+			}
+		}
+		
+		throw new IllegalArgumentException("TipoIncidente inválido");
 	}
 }

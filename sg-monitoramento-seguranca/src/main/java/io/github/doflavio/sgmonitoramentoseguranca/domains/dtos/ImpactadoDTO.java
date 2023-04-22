@@ -3,11 +3,11 @@ package io.github.doflavio.sgmonitoramentoseguranca.domains.dtos;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Atividade;
-import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Incidente;
-import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.incidente.StatusAtividadeIncidente;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Area;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.StatusEnum;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -25,10 +25,18 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AtividadeIncidenteDTOCriacao implements Serializable{
+public class ImpactadoDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
-
-	private Integer atividadeId;
-	private String observacaoAtividade;
+	
+	private Integer id;
+	private Integer usuarioId;
+	private StatusEnum status;
+	private LocalDateTime dataHoraCadastro;
+	@JsonInclude(Include.NON_NULL)
+	private LocalDateTime dataHoraDesativacao;
+	@JsonInclude(Include.NON_NULL)
+	private LocalDateTime dataHoraexclusao;
+	@JsonInclude(Include.NON_NULL)
+	private String descricaoExclusao;
 
 }

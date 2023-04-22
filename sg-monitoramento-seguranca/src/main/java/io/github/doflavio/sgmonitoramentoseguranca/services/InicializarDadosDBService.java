@@ -3,9 +3,7 @@ package io.github.doflavio.sgmonitoramentoseguranca.services;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +12,7 @@ import io.github.doflavio.sgmonitoramentoseguranca.config.Mocks;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Area;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Atividade;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.AtividadeIncidente;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Impactado;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Incidente;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.StatusEnum;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.incidente.CategoriaRiscoIncidente;
@@ -23,6 +22,7 @@ import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.incidente.TipoI
 import io.github.doflavio.sgmonitoramentoseguranca.repositories.AreaRepository;
 import io.github.doflavio.sgmonitoramentoseguranca.repositories.AtividadeIncidenteRepository;
 import io.github.doflavio.sgmonitoramentoseguranca.repositories.AtividadeRepository;
+import io.github.doflavio.sgmonitoramentoseguranca.repositories.ImpactadosRepository;
 import io.github.doflavio.sgmonitoramentoseguranca.repositories.IncidenteRepository;
 
 @Service
@@ -39,6 +39,9 @@ public class InicializarDadosDBService {
 	
 	@Autowired
 	private IncidenteRepository incidenteRepository;
+	
+	@Autowired
+	private ImpactadosRepository impactadosRepository;
 
 	public void instanciaDB() {
 		//inicilizarAreas();
@@ -46,10 +49,61 @@ public class InicializarDadosDBService {
 		
 		//inicializarAtividadesIncidentes();
 		
-		criarIncidentes();
+		
+		//criarIncidentes();
+		
+		criandoAreas();
+		criandoAtividades();
 		
 	}
 	
+	private void criandoAreas() {
+		List<Area> areas = Mocks.criarSomenteAreas();
+		areas = areaRepository.saveAll(areas);
+		criandoImpactadosAreas(areas);
+	}
+	
+	
+	private void criandoImpactadosAreas(List<Area> areas) {
+		int usuarioId=0;
+		for (Area area : areas) {
+			if(area.getId().equals(2)) {
+				usuarioId = 1;
+			}if(area.getId().equals(2)) {
+				usuarioId = 2;
+			}else {
+				usuarioId = 3;
+			}
+			
+			Impactado imp = criarImpactadoArea(usuarioId,area);
+			area.getImpactados().add(imp);
+			//impactadosRepository.save(imp);
+		}
+		areaRepository.saveAll(areas);
+	}
+	
+	private static Impactado criarImpactadoArea(int usuarioId,Area area){
+		Impactado impactado = Impactado
+				.builder()
+				.usuarioId(usuarioId)
+				.area(area)
+				.dataHoraCadastro(LocalDateTime.now())
+				.status(StatusEnum.ATIVO)
+				.build();
+		
+		return impactado;
+	}
+	
+	
+	private void criandoAtividades() {
+		List<Atividade> atividades = Mocks.criarAtividades();
+		atividadeRepository.saveAll(atividades);
+	}
+	
+	
+	
+	
+
 	private void criarIncidentes() {
 		List<Incidente> incidentes = Mocks.incidentes();
 		incidenteRepository.saveAll(incidentes);

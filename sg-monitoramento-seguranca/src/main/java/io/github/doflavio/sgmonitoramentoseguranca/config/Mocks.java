@@ -8,6 +8,7 @@ import java.util.List;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Area;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Atividade;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.AtividadeIncidente;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Impactado;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Incidente;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.StatusEnum;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.incidente.CategoriaRiscoIncidente;
@@ -19,7 +20,8 @@ public class Mocks {
 	
 	
 	private static final String NOME_AREA_1 = "Area 1";
-	private static final String NOME_AREA_2 = "Area ";
+	private static final String NOME_AREA_2 = "Area 2";
+	private static final String NOME_AREA_3 = "Area 3";
 	private static final String DESCRICAO_AREA_1 = "Descrição area 1";
 	private static final String DESCRICAO_AREA_2 = "Descrição area 2";
 	private static final String DESCRICAO_ATIVIDADE_1 = "Atividade 1";
@@ -27,6 +29,40 @@ public class Mocks {
 	private static final String DESCRICAO_ATIVIDADE_3 = "Atividade 3";
 	private static final String DESCRICAO_ATIVIDADE_4 = "Atividade 4";
 	private static final String DESCRICAO_ATIVIDADE_5 = "Atividade 5";
+	
+	
+	
+	public static List<Area> criarSomenteAreas() {
+		Area ar1 = Area.builder().nome(NOME_AREA_1).latitude(10L).longitude(20L).descricao(DESCRICAO_AREA_1)
+				.dataHoraCadastro(LocalDateTime.now()).status(StatusEnum.ATIVO).impactados(new ArrayList<>()).build();
+
+		Area ar2 = Area.builder().nome(NOME_AREA_2).latitude(30L).longitude(40L).descricao(DESCRICAO_AREA_2)
+				.dataHoraCadastro(LocalDateTime.now()).status(StatusEnum.ATIVO).impactados(new ArrayList<>()).build();
+		
+		Area ar3 = Area.builder().nome(NOME_AREA_3).latitude(300L).longitude(400L).descricao(DESCRICAO_AREA_2)
+				.dataHoraCadastro(LocalDateTime.now()).status(StatusEnum.ATIVO).impactados(new ArrayList<>()).build();
+		
+		return Arrays.asList(ar1,ar2,ar3);
+
+	}
+	
+	public static List<Atividade> criarAtividades() {
+		Atividade atv1 = Atividade.builder().descricao(DESCRICAO_ATIVIDADE_1) .build();
+		Atividade atv2 = Atividade.builder().descricao(DESCRICAO_ATIVIDADE_2) .build();
+		Atividade atv3 = Atividade.builder().descricao(DESCRICAO_ATIVIDADE_3) .build();
+		Atividade atv4 = Atividade.builder().descricao(DESCRICAO_ATIVIDADE_4) .build();
+		Atividade atv5 = Atividade.builder().descricao(DESCRICAO_ATIVIDADE_5) .build();
+		return Arrays.asList(atv1,atv2,atv3,atv4,atv5);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 
 	public static List<Incidente> incidentes(){
@@ -59,23 +95,36 @@ public class Mocks {
 	
 	private static List<Area> criarAreas() {
 		Area ar1 = Area.builder().nome(NOME_AREA_1).latitude(10L).longitude(20L).descricao(DESCRICAO_AREA_1)
-				.dataHoraCadastro(LocalDateTime.now()).status(StatusEnum.ATIVO).build();
+				.dataHoraCadastro(LocalDateTime.now()).status(StatusEnum.ATIVO).impactados(new ArrayList<>()).build();
 
 		Area ar2 = Area.builder().nome(NOME_AREA_2).latitude(30L).longitude(40L).descricao(DESCRICAO_AREA_2)
-				.dataHoraCadastro(LocalDateTime.now()).build();
+				.dataHoraCadastro(LocalDateTime.now()).status(StatusEnum.ATIVO).impactados(new ArrayList<>()).build();
 		
-		return Arrays.asList(ar1,ar2);
+		Area ar3 = Area.builder().nome(NOME_AREA_3).latitude(300L).longitude(400L).descricao(DESCRICAO_AREA_2)
+				.dataHoraCadastro(LocalDateTime.now()).status(StatusEnum.ATIVO).impactados(new ArrayList<>()).build();
+		
+		
+		ar2.getImpactados().add(criarImpactadoArea(1,ar2));
+		ar2.getImpactados().add(criarImpactadoArea(2,ar2));
+		
+		ar3.getImpactados().add(criarImpactadoArea(3,ar3));
+		
+		return Arrays.asList(ar1,ar2,ar3);
 
 	}
 	
-	private static List<Atividade> criarAtividades() {
-		Atividade atv1 = Atividade.builder().descricao(DESCRICAO_ATIVIDADE_1) .build();
-		Atividade atv2 = Atividade.builder().descricao(DESCRICAO_ATIVIDADE_2) .build();
-		Atividade atv3 = Atividade.builder().descricao(DESCRICAO_ATIVIDADE_3) .build();
-		Atividade atv4 = Atividade.builder().descricao(DESCRICAO_ATIVIDADE_4) .build();
-		Atividade atv5 = Atividade.builder().descricao(DESCRICAO_ATIVIDADE_5) .build();
-		return Arrays.asList(atv1,atv2,atv3,atv4,atv5);
+	private static Impactado criarImpactadoArea(int usuarioId,Area area){
+		Impactado impactado = Impactado
+				.builder()
+				.usuarioId(usuarioId)
+				.area(area)
+				.dataHoraCadastro(LocalDateTime.now())
+				.build();
+		
+		return impactado;
 	}
+	
+	
 	
 	
 	private static Incidente criarIncidenteComAtividades(Area area, List<Atividade> atividades){

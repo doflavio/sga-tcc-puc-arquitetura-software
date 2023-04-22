@@ -3,14 +3,8 @@ package io.github.doflavio.sgmonitoramentoseguranca.domains.dtos;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
-import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Area;
-import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.AtividadeIncidente;
-import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.incidente.CategoriaRiscoIncidente;
-import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.incidente.StatusIncidente;
-import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.incidente.TipoIncidente;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,6 +22,8 @@ public class IncidenteDTOCriacao {
 	private Integer areaId;
 	private Integer tipoIncidente;
 	private Integer categoriaRiscoIncidente;
+	
+	//@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime dataHoraincidente;
 	private Integer usuarioId;
 	private boolean exigeNotificacao;

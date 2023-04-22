@@ -28,6 +28,7 @@ public class AreaResource {
 
 	@Autowired
 	private AreaService service;
+	
 
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<AreaDTO> findById(@PathVariable Integer id) {

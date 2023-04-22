@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 
 import io.github.doflavio.sgmonitoramentoseguranca.domains.dtos.AreaDTO;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Area;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Impactado;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.StatusEnum;
 import io.github.doflavio.sgmonitoramentoseguranca.exception.ObjectnotFoundException;
 import io.github.doflavio.sgmonitoramentoseguranca.repositories.AreaRepository;
+import io.github.doflavio.sgmonitoramentoseguranca.repositories.ImpactadosRepository;
 import jakarta.validation.Valid;
 
 @Service
@@ -22,6 +24,7 @@ public class AreaService {
 
 	public Area findById(Integer id) {
 		Optional<Area> obj = repository.findById(id);
+		//Optional<Area> obj = repository.findAreaFetchImpactados(id);
 		return obj.orElseThrow(() -> new ObjectnotFoundException("Aárea não encontrada! Id: " + id));
 	}
 

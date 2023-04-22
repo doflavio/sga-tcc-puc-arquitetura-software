@@ -1,7 +1,9 @@
 package io.github.doflavio.sgmonitoramentoseguranca.domains.entities;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -51,12 +53,18 @@ public class Incidente implements Serializable{
 	@Enumerated(EnumType.STRING)
 	private CategoriaRiscoIncidente categoriaRiscoIncidente;
 	
+	//@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime dataHoraIncidente;
+	
+	//@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime dataHoraCadastro;
 	private Integer usuarioId;
 	private boolean exigeNotificacao;
 	private boolean notificado;
+	
+	//@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime dataHoraNotificacao; 
+	
 	private String observacao;
 	
 	@JsonManagedReference
@@ -67,5 +75,11 @@ public class Incidente implements Serializable{
 	
 	@Enumerated(EnumType.STRING)
 	private StatusIncidente statusIncidente;
+	
+	public String getDataHoraIncidenteStr() {
+		String pattern = "yyyy-MM-dd HH:mm:ss";
+		 DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+		 return this.dataHoraIncidente.format(formatter);
+	}
 	
 }
