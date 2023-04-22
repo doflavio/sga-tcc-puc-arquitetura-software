@@ -4,7 +4,7 @@ public class IncidenteDTO {
 
 	private Long id;
 	private Long area_id;
-	private GrauRisco grauRisco;
+	/*private GrauRisco grauRisco;
 	private Tipo tipo;
-	private LocalDateTime data;
+	private LocalDateTime data;*/
 }

@@ -20,24 +20,19 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class IncidenteDTO {
+public class IncidenteDTOCriacao {
 	
 	private Integer id;
 	private String titulo;
 	private String descricao;
-	private Area area;
-	private TipoIncidente tipoIncidente;
-	private CategoriaRiscoIncidente categoriaRiscoIncidente;
-	private StatusIncidente statusIncidente;
+	private Integer areaId;
+	private Integer tipoIncidente;
+	private Integer categoriaRiscoIncidente;
 	private LocalDateTime dataHoraincidente;
-	private LocalDateTime dataHoraCadastro;
 	private Integer usuarioId;
 	private boolean exigeNotificacao;
 	private boolean notificado;
-	
-	@JsonInclude(Include.NON_NULL)
-	private LocalDateTime dataHoraNotificacao; 
 	private String observacao;
-	private List<AtividadeIncidenteDTO> atividadesIncidente;
+	private List<AtividadeIncidenteDTOCriacao> atividades;
 	
 }
