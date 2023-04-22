@@ -84,6 +84,14 @@ public class IncidenteService {
 		
 		return incidente;
 	}
+	
+	public Incidente confirmarEnvioEmail(Integer id) {
+		Incidente incidente = findById(id);
+		incidente.setNotificado(true);
+		incidente.setDataHoraNotificacao(LocalDateTime.now());
+		incidente = repository.save(incidente);
+		return incidente;
+	}
 
 	
 	/*TODO: Olhar erro jackson
@@ -163,6 +171,8 @@ public class IncidenteService {
 		}
 		return user;
 	}
+	
+	
 	
 	
 	
