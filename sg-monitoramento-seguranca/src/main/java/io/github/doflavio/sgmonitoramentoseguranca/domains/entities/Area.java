@@ -4,12 +4,15 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import io.github.doflavio.sgmonitoramentoseguranca.domains.dtos.AreaDTO;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.dtos.ImpactadoDTO;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.dtos.SensorDTO;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.StatusEnum;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -75,17 +78,45 @@ public class Area implements Serializable{
 	@OneToMany(mappedBy = "area",cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Impactado> impactados = new ArrayList<>();
 	
+	@JsonManagedReference
+	@OneToMany(mappedBy = "area",cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Sensor> sensores = new ArrayList<>();
+	
+	private List<ImpactadoDTO> listaImpactadoDTO(){
+		if(this.impactados == null) {
+			return new ArrayList<>();
+		}
+		return this.impactados.stream().map(i-> i.toImpactadoDTO()).collect(Collectors.toList());
+	}
+	
+	private List<SensorDTO> listaSensoresDTO(){
+		return this.sensores.stream().map(i-> i.toSensorDTO()).collect(Collectors.toList());
+	}
+	/*
 	public AreaDTO toAreaDTO() {
-		return AreaDTO.builder()
+		AreaDTO areaDTO =  AreaDTO.builder()
 				.id(id)
 				.nome(nome)
 		        .latitude(latitude)
 		        .longitude(longitude)
 		        .descricao(descricao)
 		        .status(status)
-		        .impactados(impactados)
+		        .impactados(this.listaImpactadoDTO())
+		        .sensores(this.listaSensoresDTO())
 				.build();
 		
+		return areaDTO;
 		
 	}
+	*/
+	public AreaDTO toAreaDTO() {
+		AreaDTO areaDTO =  AreaDTO.builder()
+				.id(id)
+				.nome(nome)
+				.descricao(descricao)
+				.build();
+		return areaDTO;
+		
+	}
+	
 }

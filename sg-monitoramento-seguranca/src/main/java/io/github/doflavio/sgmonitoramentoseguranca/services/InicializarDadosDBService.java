@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,8 @@ import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Atividade;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.AtividadeIncidente;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Impactado;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Incidente;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.PlanoAcao;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Sensor;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.StatusEnum;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.incidente.CategoriaRiscoIncidente;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.incidente.StatusAtividadeIncidente;
@@ -24,6 +27,9 @@ import io.github.doflavio.sgmonitoramentoseguranca.repositories.AtividadeInciden
 import io.github.doflavio.sgmonitoramentoseguranca.repositories.AtividadeRepository;
 import io.github.doflavio.sgmonitoramentoseguranca.repositories.ImpactadosRepository;
 import io.github.doflavio.sgmonitoramentoseguranca.repositories.IncidenteRepository;
+import io.github.doflavio.sgmonitoramentoseguranca.repositories.PlanoAcaoRepository;
+import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
 
 @Service
 public class InicializarDadosDBService {
@@ -42,6 +48,9 @@ public class InicializarDadosDBService {
 	
 	@Autowired
 	private ImpactadosRepository impactadosRepository;
+	
+	@Autowired
+	private PlanoAcaoRepository planoAcaoRepository;
 
 	public void instanciaDB() {
 		//inicilizarAreas();
@@ -49,21 +58,21 @@ public class InicializarDadosDBService {
 		
 		//inicializarAtividadesIncidentes();
 		
-		
-		//criarIncidentes();
-		
-		criandoAreas();
-		criandoAtividades();
+		//criandoAreas();
+		//criandoAtividades();
+		criandoPlanoAcao1();
+		criarIncidente1Area4();
 		
 	}
-	
+
 	private void criandoAreas() {
-		List<Area> areas = Mocks.criarSomenteAreas();
+		List<Area> areas = Mocks.criarAreas();
 		areas = areaRepository.saveAll(areas);
 		criandoImpactadosAreas(areas);
+		//criandoSensoresAreas(areas);
+		criandoSensoresArea1(areas.get(0));
 	}
-	
-	
+
 	private void criandoImpactadosAreas(List<Area> areas) {
 		int usuarioId=0;
 		for (Area area : areas) {
@@ -94,12 +103,134 @@ public class InicializarDadosDBService {
 		return impactado;
 	}
 	
+	private void criandoSensoresAreas(List<Area> areas) {
+		for (Area area : areas) {
+			if (area.getId().equals(1)) {
+				Sensor sensor1Area1 = criarSensor1Area1(area);
+				Sensor sensor2Area1 = criarSensor2Area1(area);
+				area.getSensores().add(sensor1Area1);
+				area.getSensores().add(sensor2Area1);
+			}
+
+		}
+		areaRepository.saveAll(areas);
+
+	}
+	
+	private void criandoSensoresArea1(Area area1) {
+		
+		Sensor sensor1Area1 = criarSensor1Area1(area1);
+		Sensor sensor2Area1 = criarSensor2Area1(area1);
+		area1.getSensores().add(sensor1Area1);
+		area1.getSensores().add(sensor2Area1);
+
+		areaRepository.save(area1);
+	}
+	
+	private Sensor criarSensor1Area1(Area area1) {
+		String nome = "Nível D'agua";
+		String descricao = "Sensor para nível d'agua";
+		Long valorLimitePadrao = 600L;
+		Long valorLimiteAtencao = 700L;
+		String observacao = "Observação ok";
+
+		return Mocks.criandoSensorArea(nome, descricao, valorLimitePadrao, valorLimiteAtencao, observacao, area1);
+	}
+	
+	private Sensor criarSensor2Area1(Area area1) {
+		String nome = "Vibração";
+		String descricao = "Sensor para medir a vibração";
+		Long valorLimitePadrao = 900L;
+		Long valorLimiteAtencao = 1000L;
+		String observacao = "Observação ok";
+
+		return Mocks.criandoSensorArea(nome, descricao, valorLimitePadrao, valorLimiteAtencao, observacao, area1);
+	}
 	
 	private void criandoAtividades() {
 		List<Atividade> atividades = Mocks.criarAtividades();
 		atividadeRepository.saveAll(atividades);
 	}
 	
+	/*--------------------------------------------
+	--            PLANO DE AÇÃO                     -
+	--------------------------------------------*/
+	public void criandoPlanoAcao1() {
+		PlanoAcao planoAcao1 = Mocks.criarPlanoAcao1();
+		
+		planoAcaoRepository.save(planoAcao1);
+	}
+	
+	
+	/*--------------------------------------------
+	--            INCIDENTES                     -
+	--------------------------------------------*/
+	private void criarIncidente1Area4() {
+		
+		//Dados Área
+		String NOME_AREA_4 = "Area 4";
+		Long latitude = -205171L;
+		Long longitude = -43700L;
+		String descricaoArea = "Descrição área 4 ";
+		
+		Area area4 = Mocks.criarArea(NOME_AREA_4, latitude, longitude, descricaoArea);
+		
+		//Impactados
+		Impactado imp1 = criarImpactadoArea(1,area4);
+		Impactado imp2 = criarImpactadoArea(2,area4);
+		area4.getImpactados().add(imp1);
+		area4.getImpactados().add(imp2);
+		
+		//Sensores
+		Sensor sensor1Area1 = criarSensor1Area1(area4);
+		Sensor sensor2Area1 = criarSensor2Area1(area4);
+		area4.getSensores().add(sensor1Area1);
+		area4.getSensores().add(sensor2Area1);
+		
+		//Incidentes
+		//Dados Incidentes
+		String titulo = "Incidente para evacuação de área ";
+		String descricaoIncidente = "Deve ser realizada a evacuação da área"; 
+		TipoIncidente tipoIncidente = TipoIncidente.EVACUACAO;
+		CategoriaRiscoIncidente categoriaRiscoIncidente = CategoriaRiscoIncidente.MAXIMO; 
+		LocalDateTime dataHoraIncidente = LocalDateTime.now().minusHours(5);
+		boolean exigeNotificacao = true; 
+		boolean notificado = false;
+		LocalDateTime dataHoraNotificacao = null; 
+		String observacaoIncidente = "Observacao do Incidente"; 
+		
+		Incidente incidente = Mocks.criarIncidenteComAreaSemAtividades(
+				titulo,
+				descricaoIncidente,
+				tipoIncidente,
+				categoriaRiscoIncidente,
+				dataHoraIncidente,
+				exigeNotificacao,
+				notificado,
+				dataHoraNotificacao,
+				observacaoIncidente,
+				area4);
+		
+		//-- atividades
+		String DescricaoAtividade = "Alerta de sergurança para evacuar a região. AVISAR autoridades";
+				Atividade atividade1 = Atividade.builder().descricao(DescricaoAtividade).build();
+		List<Atividade> atividades = new ArrayList<>();
+		atividades.add(atividade1);
+				
+		List<AtividadeIncidente> atividadesAtividadeIncidentes = new ArrayList<>();
+		
+		atividades.forEach( atv -> {
+			atividadesAtividadeIncidentes.add(Mocks.criarAtividadeIncidente(atv, incidente));
+		});
+		
+		//TODO: Será removido, foi incluído o plano de ação
+		//incidente.setAtividadesIncidente(atividadesAtividadeIncidentes);
+
+		Optional<PlanoAcao> optPlanoAcao1 = planoAcaoRepository.findById(1);
+		incidente.setPlanoAcao(optPlanoAcao1.get());
+		
+		incidenteRepository.save(incidente);
+	}
 	
 	
 	
@@ -154,7 +285,7 @@ public class InicializarDadosDBService {
 				.exigeNotificacao(true)
 				.observacao("Observação para atenção")
 				.statusIncidente(StatusIncidente.ABERTO)
-				.atividadesIncidente(new ArrayList<>())
+				//.atividadesIncidente(new ArrayList<>())
 				//.atividadesIncidente(new LinkedList<>())
 				.build();
 		
@@ -166,9 +297,9 @@ public class InicializarDadosDBService {
 				.statusAtividadeIncidente(StatusAtividadeIncidente.ABERTO).dataHoraCadastro(LocalDateTime.now())
 				.build();
 		
-		
-		incidente1.getAtividadesIncidente().add(ativ1Incidente1);
-		incidente1.getAtividadesIncidente().add(ativ2Incidente1);
+		//TODO: Será removido, foi incluído o plano de ação
+		//incidente1.getAtividadesIncidente().add(ativ1Incidente1);
+		//incidente1.getAtividadesIncidente().add(ativ2Incidente1);
 		
 		incidenteRepository.saveAll(Arrays.asList(incidente1));
 		

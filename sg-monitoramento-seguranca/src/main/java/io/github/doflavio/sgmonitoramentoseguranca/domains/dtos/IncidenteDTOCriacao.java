@@ -4,7 +4,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.PlanoAcaoDTO;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.PlanoAcaoDTOCriacao;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,5 +33,6 @@ public class IncidenteDTOCriacao {
 	private boolean notificado;
 	private String observacao;
 	private List<AtividadeIncidenteDTOCriacao> atividades;
-	
+	//@JsonProperty("PlanoAcao")
+	private PlanoAcaoDTOCriacao planoAcao;
 }

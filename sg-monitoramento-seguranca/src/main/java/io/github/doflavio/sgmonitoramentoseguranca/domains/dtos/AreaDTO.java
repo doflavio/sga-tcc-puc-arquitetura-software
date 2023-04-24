@@ -4,8 +4,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Area;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Impactado;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Sensor;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.StatusEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -14,6 +18,7 @@ import lombok.Data;
 
 @Data
 @Builder
+@JsonInclude(Include.NON_NULL)
 public class AreaDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -36,7 +41,17 @@ public class AreaDTO implements Serializable {
 	
 	private StatusEnum status;
 	
-	private List<Impactado> impactados;
+	private List<ImpactadoDTO> impactados;
+	
+	private List<SensorDTO> sensores;
+	
+	private List<Impactado> listaImpactados(){
+		return new ArrayList<Impactado>();
+	}
+	
+	private List<Sensor> listaSensores(){
+		return new ArrayList<Sensor>();
+	}
 	
 	public Area toArea() {
 		return Area
@@ -46,6 +61,8 @@ public class AreaDTO implements Serializable {
 				.latitude(latitude)
 				.longitude(longitude)
 				.descricao(descricao)
+				.impactados(this.listaImpactados())
+				.sensores(this.listaSensores())
 				.build();
 	}
 	

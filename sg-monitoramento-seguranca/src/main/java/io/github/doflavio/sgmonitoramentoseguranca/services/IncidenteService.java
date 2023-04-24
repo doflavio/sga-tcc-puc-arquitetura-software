@@ -22,6 +22,7 @@ import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Area;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Atividade;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.AtividadeIncidente;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Incidente;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.PlanoAcao;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.User;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.incidente.CategoriaRiscoIncidente;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.incidente.StatusAtividadeIncidente;
@@ -32,6 +33,7 @@ import io.github.doflavio.sgmonitoramentoseguranca.feignclients.UserFeignClient;
 import io.github.doflavio.sgmonitoramentoseguranca.infra.EmissaoNotificacaoIncidentePublisher;
 import io.github.doflavio.sgmonitoramentoseguranca.repositories.AtividadeRepository;
 import io.github.doflavio.sgmonitoramentoseguranca.repositories.IncidenteRepository;
+import io.github.doflavio.sgmonitoramentoseguranca.repositories.PlanoAcaoRepository;
 
 @Service
 public class IncidenteService {
@@ -46,6 +48,9 @@ public class IncidenteService {
 	
 	@Autowired
 	private AtividadeRepository atividadeRepository;
+	
+	@Autowired
+	private PlanoAcaoRepository planoAcaoRepository;
 	
 	@Autowired
 	private AreaService areaService;
@@ -70,11 +75,12 @@ public class IncidenteService {
 		
 		Area area = areaService.findById(objDTO.getAreaId());
 		User usuario = findUsuarioById(objDTO.getUsuarioId());
+		PlanoAcao planoAcao =  findPlanoAcaoById(objDTO.getPlanoAcao().getId());
 		
 		List<Integer> idsAtividades = objDTO.getAtividades().stream().map(a -> a.getAtividadeId()).collect(Collectors.toList());
 		List<Atividade> atividades =  atividadeRepository.findByIdIn(idsAtividades);
 		
-		Incidente incidente = criarIncidente(objDTO, area, atividades);
+		Incidente incidente = criarIncidente(objDTO, area, atividades,planoAcao);
 		
 		incidente = repository.save(incidente);
 		
@@ -109,8 +115,8 @@ public class IncidenteService {
 																		.protocoloEmissao(UUID.randomUUID())
 																		.incidenteId(incidente.getId())
 																		.tipoIncidente(incidente.getTipoIncidente())
-																		//.dataHoraIncidente(incidente.getDataHoraIncidente())
-																		.dataHoraIncidente(incidente.getDataHoraIncidenteStr())
+																		.dataHoraIncidente(incidente.getDataHoraIncidente())
+																		//.dataHoraIncidente(incidente.getDataHoraIncidenteStr())
 																		.areaNome(areaIncidente.getNome())
 																		.idsUsuariosImpactados(idsUsuariosImpactados)
 																		.build();
@@ -121,7 +127,7 @@ public class IncidenteService {
 		}
 	}
 	
-	private Incidente criarIncidente(IncidenteDTOCriacao objDTO, Area area, List<Atividade> atividades){
+	private Incidente criarIncidente(IncidenteDTOCriacao objDTO, Area area, List<Atividade> atividades,PlanoAcao planoAcao){
 		
 		TipoIncidente tipoIncidente = TipoIncidente.toEnum(objDTO.getTipoIncidente());
 		CategoriaRiscoIncidente categoriaRiscoIncidente = CategoriaRiscoIncidente.toEnum(objDTO.getCategoriaRiscoIncidente());
@@ -142,7 +148,8 @@ public class IncidenteService {
 				.exigeNotificacao(true)
 				.observacao(objDTO.getObservacao())
 				.statusIncidente(StatusIncidente.ABERTO)
-				.atividadesIncidente(new ArrayList<>())
+				//.atividadesIncidente(new ArrayList<>())
+				.planoAcao(planoAcao)
 				.build();
 		
 		List<AtividadeIncidente> atividadesAtividadeIncidentes = new ArrayList<>();
@@ -151,7 +158,8 @@ public class IncidenteService {
 			atividadesAtividadeIncidentes.add(criarAtividadeIncidente(a, incidente));
 		});
 		
-		incidente.setAtividadesIncidente(atividadesAtividadeIncidentes);
+		//TODO: Será removido, foi incluído o plano de ação
+		//incidente.setAtividadesIncidente(atividadesAtividadeIncidentes);
 		
 		return incidente;
 	}
@@ -172,50 +180,9 @@ public class IncidenteService {
 		return user;
 	}
 	
-	
-	
-	
-	
-	/*
-	public Incidente update(Integer id, @Valid IncidenteDTO objDTO) {
-		objDTO.setId(id);
-		Incidente oldObj = findById(id);
-		oldObj = pIncidenterea(objDTO);
-		return repository.save(oldObj);
+	private PlanoAcao findPlanoAcaoById(Integer id) {
+		Optional<PlanoAcao> optPlanoAcao = planoAcaoRepository.findById(id);
+		return optPlanoAcao.orElseThrow(() -> new ObjectnotFoundException("Incidente não encontrado! Id: " + id));
 	}
-
-	public void delete(Integer id) {
-		findById(id);
-		
-		//TODO: Verificar se áres já associdado algum status
-		//Verificar se ao invés de deletar, remover lógicamente = Status removido
-		repository.deleteById(id);
-	}
-	
-	public void removerLogicamente(Integer id) {
-		Incidente objRemover =  findById(id);
-		objRemover.setStatus(StatusEnum.REMOVIDO);
-		objRemover.setDataHoraRemocao(LocalDateTime.now());
-		objRemover.setDescricaoRemocao("REMOÇÃO LOGICA - TESTE");
-		
-		repository.save(objRemover);
-	}
-	
-	public Incidente desativar(Integer id) {
-		Incidente oldObj = findById(id);
-		oldObj.setStatus(StatusEnum.DESATIVADO);
-		oldObj.setDataHoraDesativacao(LocalDateTime.now());
-		return repository.save(oldObj);
-	}
-	
-	private Incidente pIncidenterea(IncidenteDTO objDTO) {
-		return Incidente.builder()
-				.nome(objDTO.getNome())
-				.descricao(objDTO.getDescricao())
-				.latitude(objDTO.getLatitude())
-				.longitude(objDTO.getLongitude())
-				.descricao(objDTO.getDescricao())
-				.build();
-	}*/
 	
 }

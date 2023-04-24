@@ -6,8 +6,11 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Area;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.PlanoAcao;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.PlanoAcaoDTO;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.incidente.CategoriaRiscoIncidente;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.incidente.StatusIncidente;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.incidente.TipoIncidente;
@@ -20,6 +23,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(Include.NON_NULL)
 public class IncidenteDTO {
 	
 	//private final String PATTERN_DATE = "yyyy-MM-dd HH:mm:ss";
@@ -27,13 +31,14 @@ public class IncidenteDTO {
 	private Integer id;
 	private String titulo;
 	private String descricao;
-	private Area area;
+	@JsonProperty("Area")
+	private AreaDTO areaDTO;
 	private TipoIncidente tipoIncidente;
 	private CategoriaRiscoIncidente categoriaRiscoIncidente;
 	private StatusIncidente statusIncidente;
 	
 	//@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	private LocalDateTime dataHoraincidente;
+	private LocalDateTime dataHoraIncidente;
 	
 	//@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime dataHoraCadastro;
@@ -45,5 +50,7 @@ public class IncidenteDTO {
 	private LocalDateTime dataHoraNotificacao; 
 	private String observacao;
 	private List<AtividadeIncidenteDTO> atividadesIncidente;
+	@JsonProperty("PlanoAcao")
+	private PlanoAcaoDTO planoAcaoDTO;
 	
 }

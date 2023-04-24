@@ -37,7 +37,8 @@ public class IncidenteResource {
 		Incidente obj = service.findById(id);
 		//return ResponseEntity.ok().body(modelMapper.map(obj, IncidenteDTOCriacao.class));
 		
-		return ResponseEntity.ok().body(modelMapper.map(obj, IncidenteDTO.class));
+		//return ResponseEntity.ok().body(modelMapper.map(obj, IncidenteDTO.class));
+		return ResponseEntity.ok().body(obj.toIncidenteDTO());
 	}
 
 	@GetMapping

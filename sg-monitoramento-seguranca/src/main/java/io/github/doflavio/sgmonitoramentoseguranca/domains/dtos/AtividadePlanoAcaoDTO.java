@@ -10,7 +10,9 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Atividade;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Incidente;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.PlanoAcao;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.incidente.StatusAtividadeIncidente;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.incidente.StatusAtividadePlanoAcao;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -29,15 +31,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(Include.NON_NULL)
-public class AtividadeIncidenteDTO implements Serializable{
+public class AtividadePlanoAcaoDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private Integer id;
 	@JsonProperty("atividade")
 	private AtividadeDTO atividadeDTO;
-	private IncidenteDTO incidenteDTO;
+	private PlanoAcao planoAcao;
 	@JsonProperty("Status")
-	private StatusAtividadeIncidente statusAtividadeIncidente;
+	private StatusAtividadePlanoAcao statusAtividadePlanoAcao;
 	private LocalDateTime dataHoraCadastro;
 	private LocalDateTime dataHorarRealizacao;
 	private String observacao;

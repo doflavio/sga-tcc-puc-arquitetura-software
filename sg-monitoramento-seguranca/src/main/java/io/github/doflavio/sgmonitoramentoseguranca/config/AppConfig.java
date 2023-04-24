@@ -26,6 +26,11 @@ public class AppConfig {
 		//mapper.setSerializationInclusion(Include.NON_NULL);
 		modelMapper.getConfiguration().setAmbiguityIgnored(true);
 		
+		//mapper.setSerializationInclusion(Include.NON_NULL);
+        //mapper.setSerializationInclusion(Include.NON_EMPTY);
+
+        //mapper.enable(SerializationFeature.INDENT_OUTPUT);
+		
 		return modelMapper;
 	}
 	/*

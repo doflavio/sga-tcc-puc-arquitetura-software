@@ -2,13 +2,16 @@ package io.github.doflavio.sgmonitoramentoseguranca.domains.entities;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-import io.github.doflavio.sgmonitoramentoseguranca.domains.dtos.ImpactadoDTO;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.dtos.AtividadePlanoAcaoDTO;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.StatusEnum;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.incidente.StatusAtividadePlanoAcao;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.incidente.StatusPlanoAcao;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,8 +19,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,42 +30,21 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-//@Table(name = "TB_AREA")
-public class Impactado implements Serializable{
+@JsonInclude(Include.NON_NULL)
+public class PlanoAcaoDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+	private List<AtividadePlanoAcaoDTO> atividadesPlanoAcao;
 	
-	private Integer usuarioId;
-	
-	@JsonBackReference
-	@ManyToOne(cascade=CascadeType.PERSIST)
-	@JoinColumn(name = "area_id")
-	private Area area;
-	
+	private String titulo;
+	private String descricao;
 	@Enumerated(EnumType.STRING)
 	private StatusEnum status;
-	
+	private StatusPlanoAcao statusPlanoAcao;
+	private LocalDateTime dataHorarFinalizacao;
+	private String observacao;
+	private Integer usuarioId;
 	private LocalDateTime dataHoraCadastro;
 	
-	@JsonInclude(Include.NON_NULL)
-	private LocalDateTime dataHoraDesativacao;
-	
-	@JsonInclude(Include.NON_NULL)
-	private LocalDateTime dataHoraexclusao;
-	
-	@JsonInclude(Include.NON_NULL)
-	private String descricaoExclusao;
-
-	public ImpactadoDTO toImpactadoDTO() {
-		return ImpactadoDTO
-				.builder()
-				.id(id)
-				.usuarioId(usuarioId)
-				.status(status)
-				.build();
-	}
 }
