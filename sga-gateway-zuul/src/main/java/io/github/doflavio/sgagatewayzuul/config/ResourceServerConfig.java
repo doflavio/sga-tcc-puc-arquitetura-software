@@ -26,11 +26,11 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
 	@Autowired
 	private JwtTokenStore tokenStore;
 	
-	private static final String[] PUBLIC = { "/sga-oauth/oauth/token","/sga-auth-authorization/login", "/sg-sensor/**", "/sg-notificacao/**","/sg-monitoramento-seguranca/**" };
+	private static final String[] PUBLIC = { "/sga-oauth/oauth/token","/sga-auth-authorization/login", "/sg-sensor/**", "/sg-notificacao/**"};
 	
 	private static final String[] OPERATOR = { "/hr-worker/**"};
 	
-	private static final String[] ADMIN = { "/actuator/**",  "/sg-user/**",  "/sga-oauth/actuator/**", "/sga-oauth/users/**",  "/hr-payroll/**",  "/hr-worker/actuator/**"  };
+	private static final String[] ADMIN = { "/actuator/**",  "/sg-user/**",  "/sga-oauth/actuator/**", "/sga-oauth/users/**",  "/hr-payroll/**",  "/hr-worker/actuator/**","/sg-monitoramento-seguranca/**" };
 	
 	@Override
 	public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
