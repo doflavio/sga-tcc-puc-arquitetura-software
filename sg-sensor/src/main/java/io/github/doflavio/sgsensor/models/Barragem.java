@@ -7,7 +7,7 @@ public class Barragem {
 	private Long latitude;
 	private String longitude;
 	
-	Sensores --
+	//Sensores --
 }
 
---. Não exibir tela, focar no que já existe
+//--. Não exibir tela, focar no que já existe

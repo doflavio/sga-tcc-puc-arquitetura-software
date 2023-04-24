@@ -1,4 +1,4 @@
-package io.github.doflavio.sgsensor.dtos;
+/*package io.github.doflavio.sgsensor.dtos;
 
 import java.time.LocalDateTime;
 
@@ -27,3 +27,4 @@ temperatura
 
 Requisito de usabilidade-> Sipmples de cadastrar uma barragem no sistema
 alerta automático
+*/
