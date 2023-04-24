@@ -13,7 +13,10 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.doflavio.sgnotificacao.dtos.NotificacaoEmitidaIncidenteDTO;
+import io.github.doflavio.sgnotificacao.dtos.NotificacaoEnvioEmailDTO;
 import io.github.doflavio.sgnotificacao.feignclients.UserFeignClient;
+import io.github.doflavio.sgnotificacao.infra.EmissaoNotificacaoEnvioEmail;
+import io.github.doflavio.sgnotificacao.infra.EmissaoNotificacaoEnvioEmail;
 import io.github.doflavio.sgnotificacao.models.EmailModel;
 import io.github.doflavio.sgnotificacao.models.User;
 import io.github.doflavio.sgnotificacao.services.EmailService;
@@ -35,6 +38,9 @@ public class NotificacaoIncidenteConsumer {
 	
 	@Autowired
 	private UserFeignClient userFeignClient;
+	
+	@Autowired
+	private EmissaoNotificacaoEnvioEmail emissaoNotificacaoEnvioEmail;
 	
 	@RabbitListener(queues = "${mq.queues.notificacao.incidente}")
 	public void receberNotificacaoIncidente(@Payload String payload){
@@ -68,6 +74,19 @@ public class NotificacaoIncidenteConsumer {
 			emailModel.setText(MSG_MOCK_EMAIL);
 			emailModel.setSubject(SUBJECT);
 			enviarEmail(emailModel);
+			
+			NotificacaoEnvioEmailDTO emissaoNotificacaoIncidenteDTO = NotificacaoEnvioEmailDTO
+					.builder()
+					.incidenteId(notificacaoEmitidaIncidenteDTO.getIncidenteId())
+					.dataHoraEnvioEmail("2023-04-21T15:43:14.506133")
+					.build();
+			try {
+				emissaoNotificacaoEnvioEmail.emitirNotificacaoIncidente(emissaoNotificacaoIncidenteDTO);
+			} catch (JsonProcessingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		}
 		
 	}
