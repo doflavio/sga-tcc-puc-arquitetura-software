@@ -3,11 +3,11 @@ package io.github.doflavio.sgmonitoramentoseguranca.domains.enums.incidente;
 public enum TipoIncidente {
 	
 	EVACUACAO(0, "EVACUAÇÃO"), 
-	DESABAMENTO(1, "ALTO"),
-	TOMBAMENTO_VEICULO(2, "MEDIO"),
-	VEICULO_QUEBRADO(3,"VEICULO QUEBRADO"),
+	DESABAMENTO(1, "DESABAMENTO"),
+	TOMBAMENTO_VEICULO(2, "TOMBAMENTO VEÍCULO"),
+	VEICULO_QUEBRADO(3,"VEÍCULO QUEBRADO"),
 	INSPECAO(4, "INSPEÇÃO"),
-	DESLOCAMENTO_TERRA(5, "DESLOCAMENTO");
+	DESLOCAMENTO_TERRA(5, "DESLOCAMENTO DE TERRAS");
 	
 	private Integer codigo;
 	private String descricao;

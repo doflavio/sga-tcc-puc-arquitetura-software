@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.github.doflavio.sgmonitoramentoseguranca.domains.dtos.EmissaoNotificacaoIncidenteDTO;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.dtos.IncidenteDTOAtualizacao;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.dtos.IncidenteDTOCriacao;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.dtos.NotificacaoEnvioEmailDTO;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Area;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Atividade;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.AtividadeIncidente;
@@ -73,28 +75,60 @@ public class IncidenteService {
 	
 	public Incidente create(IncidenteDTOCriacao objDTO) {
 		
-		Area area = areaService.findById(objDTO.getAreaId());
+		Area area = areaService.findById(objDTO.getArea());
 		User usuario = findUsuarioById(objDTO.getUsuarioId());
-		PlanoAcao planoAcao =  findPlanoAcaoById(objDTO.getPlanoAcao().getId());
+		PlanoAcao planoAcao =  findPlanoAcaoById(objDTO.getPlanoAcao());
 		
-		List<Integer> idsAtividades = objDTO.getAtividades().stream().map(a -> a.getAtividadeId()).collect(Collectors.toList());
-		List<Atividade> atividades =  atividadeRepository.findByIdIn(idsAtividades);
+		//List<Integer> idsAtividades = objDTO.getAtividades().stream().map(a -> a.getAtividadeId()).collect(Collectors.toList());
+		//List<Atividade> atividades =  atividadeRepository.findByIdIn(idsAtividades);
 		
-		Incidente incidente = criarIncidente(objDTO, area, atividades,planoAcao);
-		
+		Incidente incidente = criarIncidente(objDTO, area, null,planoAcao);
 		incidente = repository.save(incidente);
 		
-		if(incidente.isExigeNotificacao()) {
-			notificarIncidente(incidente);
+		try {
+			if (incidente.isExigeNotificacao()) {
+				notificarIncidente(incidente);
+				incidente.setNotificado(true);
+			}
+		} catch (Exception e) {
+			logger.error("Não foi possível enviar notificação para o incidente :" + incidente.getId());
 		}
 		
-		return incidente;
+		return repository.save(incidente);
+		
 	}
 	
-	public Incidente confirmarEnvioEmail(Integer id) {
+	public Incidente atualizar(IncidenteDTOAtualizacao objDTO) {
+		
+		Incidente incidente = findById(objDTO.getId());
+		
+		incidente = repository.save(incidente);
+		incidente.setDescricao(objDTO.getDescricao());
+		incidente.setObservacao(objDTO.getObservacao());
+		incidente.setCategoriaRiscoIncidente(CategoriaRiscoIncidente.toEnum(objDTO.getCategoriaRiscoIncidente()));
+		incidente.setStatusIncidente(StatusIncidente.toEnum(objDTO.getStatusIncidente()));
+		
+		
+		
+		try {
+			if (incidente.isExigeNotificacao()) {
+				notificarIncidente(incidente);
+				incidente.setNotificado(true);			}
+		} catch (Exception e) {
+			logger.error("Não foi possível enviar notificação para o incidente :" + incidente.getId());
+		}
+		incidente.setNotificado(true);	
+		return repository.save(incidente);
+		
+	}
+	
+	public Incidente confirmarEnvioEmail(Integer id, NotificacaoEnvioEmailDTO objDTO) {
 		Incidente incidente = findById(id);
 		incidente.setNotificado(true);
-		incidente.setDataHoraNotificacao(LocalDateTime.now());
+		incidente.setDataHoraNotificacao(objDTO.getDataHoraEnvioEmail());
+		String observacao = incidente.getObservacao();
+		observacao = observacao + "\n" + "Email de notificação enviado";
+		incidente.setObservacao(null);
 		incidente = repository.save(incidente);
 		return incidente;
 	}
@@ -131,7 +165,7 @@ public class IncidenteService {
 		
 		TipoIncidente tipoIncidente = TipoIncidente.toEnum(objDTO.getTipoIncidente());
 		CategoriaRiscoIncidente categoriaRiscoIncidente = CategoriaRiscoIncidente.toEnum(objDTO.getCategoriaRiscoIncidente());
-		
+		StatusIncidente statusIncidente = StatusIncidente.toEnum(objDTO.getStatusIncidente());
 		
 		Incidente incidente = Incidente
 				.builder()
@@ -140,23 +174,24 @@ public class IncidenteService {
 				.area(area)
 				.tipoIncidente(tipoIncidente)
 				.categoriaRiscoIncidente(categoriaRiscoIncidente)
-				.dataHoraIncidente(LocalDateTime.now().minusHours(5))
+				.dataHoraIncidente(LocalDateTime.now())
 				.dataHoraCadastro(LocalDateTime.now())
 				
 				//TODO: verificar como será a utilizacao do usuário - Ex:1 = sistema
 				.usuarioId(objDTO.getUsuarioId())
-				.exigeNotificacao(true)
+				.exigeNotificacao(objDTO.isExigeNotificacao())
 				.observacao(objDTO.getObservacao())
-				.statusIncidente(StatusIncidente.ABERTO)
+				.statusIncidente(statusIncidente)
 				//.atividadesIncidente(new ArrayList<>())
 				.planoAcao(planoAcao)
 				.build();
 		
+		/* Atividade foi removido
 		List<AtividadeIncidente> atividadesAtividadeIncidentes = new ArrayList<>();
 		
 		atividades.forEach( a -> {
 			atividadesAtividadeIncidentes.add(criarAtividadeIncidente(a, incidente));
-		});
+		});*/
 		
 		//TODO: Será removido, foi incluído o plano de ação
 		//incidente.setAtividadesIncidente(atividadesAtividadeIncidentes);

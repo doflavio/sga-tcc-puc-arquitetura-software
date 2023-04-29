@@ -25,7 +25,7 @@ public class AreaService {
 	public Area findById(Integer id) {
 		Optional<Area> obj = repository.findById(id);
 		//Optional<Area> obj = repository.findAreaFetchImpactados(id);
-		return obj.orElseThrow(() -> new ObjectnotFoundException("Aárea não encontrada! Id: " + id));
+		return obj.orElseThrow(() -> new ObjectnotFoundException("Área não encontrada! Id: " + id));
 	}
 
 	public List<Area> findAll() {

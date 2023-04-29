@@ -31,11 +31,16 @@ public class IncidenteDTO {
 	private Integer id;
 	private String titulo;
 	private String descricao;
-	@JsonProperty("Area")
+	@JsonProperty("area")
 	private AreaDTO areaDTO;
-	private TipoIncidente tipoIncidente;
-	private CategoriaRiscoIncidente categoriaRiscoIncidente;
-	private StatusIncidente statusIncidente;
+	
+	private String areaNome;
+	
+	private Integer tipoIncidente;
+	
+	private Integer categoriaRiscoIncidente;
+	
+	private Integer statusIncidente;
 	
 	//@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime dataHoraIncidente;
@@ -52,5 +57,6 @@ public class IncidenteDTO {
 	private List<AtividadeIncidenteDTO> atividadesIncidente;
 	@JsonProperty("PlanoAcao")
 	private PlanoAcaoDTO planoAcaoDTO;
+	private String planoAcaoNome;
 	
 }

@@ -106,9 +106,9 @@ public class Incidente implements Serializable{
 				.titulo(titulo)
 				.descricao(descricao)
 				.areaDTO(area.toAreaDTO())
-				.tipoIncidente(tipoIncidente)
-				.categoriaRiscoIncidente(categoriaRiscoIncidente)
-				.statusIncidente(statusIncidente)
+				.tipoIncidente(tipoIncidente.getCodigo())
+				.categoriaRiscoIncidente(categoriaRiscoIncidente.getCodigo())
+				.statusIncidente(statusIncidente.getCodigo())
 				.dataHoraIncidente(dataHoraIncidente)
 				.exigeNotificacao(exigeNotificacao)
 				.notificado(notificado)
@@ -116,6 +116,8 @@ public class Incidente implements Serializable{
 				//.atividadesIncidente(this.listaAtividadeIncidenteDTO())
 				.planoAcaoDTO(planoAcao.toPlanoAcaoDTO())
 				.observacao(observacao)
+				.areaNome(area.getNome())
+				.planoAcaoNome(planoAcao.getTitulo())
 				.build();
 		
 		return incidenteDTO;

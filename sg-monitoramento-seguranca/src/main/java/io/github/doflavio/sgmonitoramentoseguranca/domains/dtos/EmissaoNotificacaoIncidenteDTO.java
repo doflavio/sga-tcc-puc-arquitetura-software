@@ -19,16 +19,12 @@ import lombok.Data;
 public class EmissaoNotificacaoIncidenteDTO {
 	private UUID protocoloEmissao;
 	private Integer incidenteId;
+	private String incidenteTitulo; 
 	private TipoIncidente tipoIncidente;
-	
-	//@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+
 	@JsonSerialize(using = LocalDateTimeSerializer.class)
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	private LocalDateTime dataHoraIncidente;
-	
-	//Contorno momentâneo
-	//private String dataHoraIncidente;
-	
 	private String areaNome;
 	private List<Integer> idsUsuariosImpactados = new ArrayList<>();
 	

@@ -5,11 +5,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import io.github.doflavio.sgmonitoramentoseguranca.config.Mocks;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.dtos.EmissaoNotificacaoIncidenteDTO;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.dtos.IncidenteDTOCriacao;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Area;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Atividade;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.AtividadeIncidente;
@@ -22,6 +30,7 @@ import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.incidente.Categ
 import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.incidente.StatusAtividadeIncidente;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.incidente.StatusIncidente;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.incidente.TipoIncidente;
+import io.github.doflavio.sgmonitoramentoseguranca.infra.EmissaoNotificacaoIncidentePublisher;
 import io.github.doflavio.sgmonitoramentoseguranca.repositories.AreaRepository;
 import io.github.doflavio.sgmonitoramentoseguranca.repositories.AtividadeIncidenteRepository;
 import io.github.doflavio.sgmonitoramentoseguranca.repositories.AtividadeRepository;
@@ -33,6 +42,8 @@ import jakarta.validation.constraints.NotNull;
 
 @Service
 public class InicializarDadosDBService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(IncidenteService.class);
 
 	@Autowired
 	private AreaRepository areaRepository;
@@ -51,6 +62,9 @@ public class InicializarDadosDBService {
 	
 	@Autowired
 	private PlanoAcaoRepository planoAcaoRepository;
+	
+	@Autowired
+	private EmissaoNotificacaoIncidentePublisher emissaoNotificacaoIncidentePublisher;
 
 	public void instanciaDB() {
 		//inicilizarAreas();
@@ -58,10 +72,15 @@ public class InicializarDadosDBService {
 		
 		//inicializarAtividadesIncidentes();
 		
-		//criandoAreas();
-		//criandoAtividades();
+		criandoAreas();
+		criandoAtividades();
 		criandoPlanoAcao1();
 		criarIncidente1Area4();
+		/*criarIncidente1Area4();
+		criarIncidente1Area4();
+		criarIncidente1Area4();
+		criarIncidente1Area4();
+		criarIncidente1Area4();*/
 		
 	}
 
@@ -84,6 +103,8 @@ public class InicializarDadosDBService {
 				usuarioId = 3;
 			}
 			
+			//TODO: Verificar usuarioId
+			usuarioId = 1;
 			Impactado imp = criarImpactadoArea(usuarioId,area);
 			area.getImpactados().add(imp);
 			//impactadosRepository.save(imp);
@@ -168,16 +189,18 @@ public class InicializarDadosDBService {
 	private void criarIncidente1Area4() {
 		
 		//Dados Área
-		String NOME_AREA_4 = "Area 4";
+		String NOME_AREA_4 = "Area F4B";
 		Long latitude = -205171L;
 		Long longitude = -43700L;
-		String descricaoArea = "Descrição área 4 ";
+		String descricaoArea = "Descrição Área F4B ";
 		
 		Area area4 = Mocks.criarArea(NOME_AREA_4, latitude, longitude, descricaoArea);
 		
 		//Impactados
 		Impactado imp1 = criarImpactadoArea(1,area4);
 		Impactado imp2 = criarImpactadoArea(2,area4);
+	
+		
 		area4.getImpactados().add(imp1);
 		area4.getImpactados().add(imp2);
 		
@@ -217,11 +240,11 @@ public class InicializarDadosDBService {
 		List<Atividade> atividades = new ArrayList<>();
 		atividades.add(atividade1);
 				
-		List<AtividadeIncidente> atividadesAtividadeIncidentes = new ArrayList<>();
+		/*List<AtividadeIncidente> atividadesAtividadeIncidentes = new ArrayList<>();
 		
 		atividades.forEach( atv -> {
 			atividadesAtividadeIncidentes.add(Mocks.criarAtividadeIncidente(atv, incidente));
-		});
+		});*/
 		
 		//TODO: Será removido, foi incluído o plano de ação
 		//incidente.setAtividadesIncidente(atividadesAtividadeIncidentes);
@@ -229,7 +252,32 @@ public class InicializarDadosDBService {
 		Optional<PlanoAcao> optPlanoAcao1 = planoAcaoRepository.findById(1);
 		incidente.setPlanoAcao(optPlanoAcao1.get());
 		
-		incidenteRepository.save(incidente);
+		incidente = incidenteRepository.save(incidente);
+		
+		try {
+			notificarIncidente(incidente);
+		} catch (Exception e) {
+			logger.error("Não foi possível enviar notificação para o incidente :" + incidente.getId());
+		}
+		
+		/*
+		IncidenteDTOCriacao ic = IncidenteDTOCriacao
+									.builder()
+									.titulo(titulo)
+									.tipoIncidente(incidente.getTipoIncidente().getCodigo())
+									.descricao(incidente.getDescricao())
+									.categoriaRiscoIncidente(incidente.getCategoriaRiscoIncidente().getCodigo())
+									.statusIncidente(incidente.getStatusIncidente().getCodigo())
+									.dataHoraincidente(incidente.getDataHoraIncidente())
+									.exigeNotificacao(true)
+									.observacao(incidente.getObservacao())
+									.planoAcao(incidente.getPlanoAcao().getId())
+									.usuarioId(1)
+									.build();*/
+		
+
+		
+		
 	}
 	
 	
@@ -281,7 +329,7 @@ public class InicializarDadosDBService {
 				.dataHoraCadastro(LocalDateTime.now())
 				
 				//TODO: verificar como será a utilizacao do usuário - Ex:1 = sistema
-				.usuarioId(1)
+				.usuarioId(3)
 				.exigeNotificacao(true)
 				.observacao("Observação para atenção")
 				.statusIncidente(StatusIncidente.ABERTO)
@@ -303,5 +351,31 @@ public class InicializarDadosDBService {
 		
 		incidenteRepository.saveAll(Arrays.asList(incidente1));
 		
+	}
+	
+	
+	private void notificarIncidente(Incidente incidente) {
+		
+		Optional<Area> areaIncidenteOpt = areaRepository.findById(incidente.getArea().getId());
+		Area areaIncidente = areaIncidenteOpt.get();
+		//List<Integer> idsUsuariosImpactados = areaIncidente.getImpactados().stream().map(i -> i.getUsuarioId()).collect(Collectors.toList());
+		
+		List<Integer> idsUsuariosImpactados = Arrays.asList(3);
+		
+		EmissaoNotificacaoIncidenteDTO notificacao = EmissaoNotificacaoIncidenteDTO
+																		.builder()
+																		.protocoloEmissao(UUID.randomUUID())
+																		.incidenteId(incidente.getId())
+																		.tipoIncidente(incidente.getTipoIncidente())
+																		.dataHoraIncidente(incidente.getDataHoraIncidente())
+																		//.dataHoraIncidente(incidente.getDataHoraIncidenteStr())
+																		.areaNome(areaIncidente.getNome())
+																		.idsUsuariosImpactados(idsUsuariosImpactados)
+																		.build();
+		try {
+			emissaoNotificacaoIncidentePublisher.emitirNotificacaoIncidente(notificacao);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
 	}
 }

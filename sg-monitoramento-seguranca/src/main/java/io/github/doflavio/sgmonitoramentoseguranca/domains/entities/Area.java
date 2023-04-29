@@ -114,6 +114,9 @@ public class Area implements Serializable{
 				.id(id)
 				.nome(nome)
 				.descricao(descricao)
+				.latitude(latitude)
+				.longitude(longitude)
+				.status(status)
 				.build();
 		return areaDTO;
 		

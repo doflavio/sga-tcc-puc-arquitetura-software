@@ -1,15 +1,15 @@
 package io.github.doflavio.sgmonitoramentoseguranca.config;
 
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 
@@ -29,7 +29,7 @@ public class RabbitMQConfig {
 		return new Queue(filaNotificacaoIncidente,true);
 	}
 	
-	/*
+	
 	@Bean
 	public MessageConverter jsonMessageConverter() {
 		final ObjectMapper mapper = new ObjectMapper();
@@ -39,6 +39,7 @@ public class RabbitMQConfig {
 		return new Jackson2JsonMessageConverter(mapper);
 	}
 	
+	/*
 	@Bean
 	public ObjectMapper objectMapper() {
 		ObjectMapper objectMapper = new ObjectMapper();

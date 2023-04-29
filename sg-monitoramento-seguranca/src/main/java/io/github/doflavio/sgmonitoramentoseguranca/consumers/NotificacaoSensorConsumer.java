@@ -13,37 +13,35 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.doflavio.sgmonitoramentoseguranca.domains.dtos.NotificacaoEnvioEmailDTO;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.dtos.NotificacaoSensorDTO;
 import io.github.doflavio.sgmonitoramentoseguranca.services.IncidenteService;
 
 @Component
-public class NotificacaoEnvioEmailConsumer {
+public class NotificacaoSensorConsumer {
 
-	private static final Logger logger = LoggerFactory.getLogger(NotificacaoEnvioEmailConsumer.class);
+	private static final Logger logger = LoggerFactory.getLogger(NotificacaoSensorConsumer.class);
 	
 	@Autowired
 	private ModelMapper modelMapper;
 	
-	@Autowired
-	private IncidenteService incidenteService;
-	
-	@RabbitListener(queues = "${mq.queues.notificacao.envio.email}")
+	@RabbitListener(queues = "${mq.queues.notificacao.sensor.envio.valor}")
 	public void receberNotificacaoIncidente(@Payload String payload){
 		try {
-			NotificacaoEnvioEmailDTO notificacaoEnvioEmailDTO = convertIntoEmissaoNoificacaoIncidenteDTO(payload);
-			System.out.println("Email Envidado id do incidente: " + notificacaoEnvioEmailDTO.getIncidenteId());
+			System.out.println(payload);
+			NotificacaoSensorDTO notificacaoSensorDTO = convertIntoNotificacaoSensorDTO(payload);
+			System.out.println("Envio messageria - id do sensor: " + notificacaoSensorDTO.getSensorId());
 			
-			incidenteService.confirmarEnvioEmail(notificacaoEnvioEmailDTO.getIncidenteId(), notificacaoEnvioEmailDTO);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
 		
 	}
 	
-	private NotificacaoEnvioEmailDTO convertIntoEmissaoNoificacaoIncidenteDTO(String payload) throws JsonMappingException, JsonProcessingException {
+	private NotificacaoSensorDTO convertIntoNotificacaoSensorDTO(String payload) throws JsonProcessingException {
 		//return modelMapper.map(payload, EmissaoNoificacaoIncidenteDTO.class);
 		
 		ObjectMapper mapper = new ObjectMapper();
-		return mapper.readValue(payload, NotificacaoEnvioEmailDTO.class);
+		return mapper.readValue(payload, NotificacaoSensorDTO.class);
 	}
 	
 }
