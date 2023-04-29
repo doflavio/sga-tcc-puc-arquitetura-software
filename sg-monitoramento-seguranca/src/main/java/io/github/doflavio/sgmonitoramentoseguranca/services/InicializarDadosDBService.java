@@ -189,7 +189,7 @@ public class InicializarDadosDBService {
 	private void criarIncidente1Area4() {
 		
 		//Dados Área
-		String NOME_AREA_4 = "Area F4B";
+		String NOME_AREA_4 = "Area F4";
 		Long latitude = -205171L;
 		Long longitude = -43700L;
 		String descricaoArea = "Descrição Área F4B ";
