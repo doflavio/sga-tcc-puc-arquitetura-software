@@ -23,8 +23,9 @@ import lombok.NoArgsConstructor;
 public class NotificacaoEmitidaIncidenteDTO {
 	private UUID protocoloEmissao;
 	private Integer incidenteId;
-	//private TipoIncidente tipoIncidente;
-	private String tipoIncidente;
+	private String incidenteTitulo; 
+	private TipoIncidente tipoIncidente;
+	//private String tipoIncidente;
 	
 	@JsonSerialize(using = LocalDateTimeSerializer.class)
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
@@ -35,10 +36,11 @@ public class NotificacaoEmitidaIncidenteDTO {
 	private String areaNome;
 	private List<Integer> idsUsuariosImpactados = new ArrayList<>();
 	
+	/*
 	public TipoIncidente getTipoIncidente() {
 		if(this.tipoIncidente != null && !this.tipoIncidente.isBlank()) {
 			return TipoIncidente.toEnum(tipoIncidente);
 		}
 		throw new IllegalArgumentException("TipoIncidente inválido");
-	}
+	}*/
 }

@@ -19,14 +19,14 @@ public class EmissaoNotificacaoEnvioEmail {
 	@Autowired
 	private final RabbitTemplate rabbitTemplate;
 	
-	@Qualifier("notificacaoEnvioEmail")
-	//@Autowired
-	private final Queue queueEmissaoNotificacaoEnvioEmail;
+	//@Qualifier("notificacaoEnvioEmail")
+	//private final Queue queueEmissaoNotificacaoEnvioEmail;
 	
 	
 	public void emitirNotificacaoIncidente(NotificacaoEnvioEmailDTO emissaoNotificacaoIncidenteDTO) throws JsonProcessingException {
 		var json = convertIntoJson(emissaoNotificacaoIncidenteDTO);
-		rabbitTemplate.convertAndSend(queueEmissaoNotificacaoEnvioEmail.getName(),json);
+		//rabbitTemplate.convertAndSend(queueEmissaoNotificacaoEnvioEmail.getName(),json);
+		rabbitTemplate.convertAndSend("ms.sg.notificacao.envio.email",json);
 	}
 	
 	private String convertIntoJson(NotificacaoEnvioEmailDTO emissaoNotificacaoIncidenteDTO) throws JsonProcessingException{

@@ -31,8 +31,12 @@ public class EmailService {
         emailModel.setSendDateEmail(LocalDateTime.now());
         try{
             SimpleMailMessage message = new SimpleMailMessage();
+            emailModel.setEmailFrom("doflavio@gmail.com");
             message.setFrom(emailModel.getEmailFrom());
             message.setTo(emailModel.getEmailTo());
+            //message.setTo("doflavio.web@gmail.com");
+            
+            //message.setReplyTo("doflavio.web@gmail.com");
             message.setSubject(emailModel.getSubject());
             message.setText(emailModel.getText());
             emailSender.send(message);

@@ -1,5 +1,7 @@
 package io.github.doflavio.sgnotificacao.consumers;
 
+import java.time.LocalDateTime;
+
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,12 +16,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.doflavio.sgnotificacao.dtos.NotificacaoEmitidaIncidenteDTO;
 import io.github.doflavio.sgnotificacao.dtos.NotificacaoEnvioEmailDTO;
+import io.github.doflavio.sgnotificacao.feignclients.IncidenteFeignClient;
 import io.github.doflavio.sgnotificacao.feignclients.UserFeignClient;
 import io.github.doflavio.sgnotificacao.infra.EmissaoNotificacaoEnvioEmail;
-import io.github.doflavio.sgnotificacao.infra.EmissaoNotificacaoEnvioEmail;
 import io.github.doflavio.sgnotificacao.models.EmailModel;
+import io.github.doflavio.sgnotificacao.models.Notificacao;
 import io.github.doflavio.sgnotificacao.models.User;
 import io.github.doflavio.sgnotificacao.services.EmailService;
+import io.github.doflavio.sgnotificacao.services.NotificacaolService;
 
 @Component
 public class NotificacaoIncidenteConsumer {
@@ -27,7 +31,7 @@ public class NotificacaoIncidenteConsumer {
 	private static final Logger logger = LoggerFactory.getLogger(NotificacaoIncidenteConsumer.class);
 	
 	private static final String EMAIL_FROM = "doflavio@gmail.com";
-	private static final String SUBJECT = "Teste de integração";
+	private static final String SUBJECT = "SIGAM - Mensagem Urgente";
 	private static final String MSG_MOCK_EMAIL = "Esta mensagem faz parte de um teste de envio de email por uma aplicação de notificação do sistema SIGAM";
 	
 	@Autowired
@@ -40,7 +44,13 @@ public class NotificacaoIncidenteConsumer {
 	private UserFeignClient userFeignClient;
 	
 	@Autowired
+	private IncidenteFeignClient incidenteFeignClient;
+	
+	@Autowired
 	private EmissaoNotificacaoEnvioEmail emissaoNotificacaoEnvioEmail;
+	
+	@Autowired
+	private NotificacaolService notificacaoService;
 	
 	@RabbitListener(queues = "${mq.queues.notificacao.incidente}")
 	public void receberNotificacaoIncidente(@Payload String payload){
@@ -48,12 +58,15 @@ public class NotificacaoIncidenteConsumer {
 			NotificacaoEmitidaIncidenteDTO notificacaoEmitidaIncidenteDTO = convertIntoEmissaoNoificacaoIncidenteDTO(payload);
 			System.out.println("Protocolo emissão: " + notificacaoEmitidaIncidenteDTO.getProtocoloEmissao());
 			notificar(notificacaoEmitidaIncidenteDTO);
+			confirmarEnvioEmail(notificacaoEmitidaIncidenteDTO.getIncidenteId());
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
 		
 	}
+
 	
+
 	private NotificacaoEmitidaIncidenteDTO convertIntoEmissaoNoificacaoIncidenteDTO(String payload) throws JsonMappingException, JsonProcessingException {
 		//return modelMapper.map(payload, EmissaoNoificacaoIncidenteDTO.class);
 		
@@ -65,30 +78,61 @@ public class NotificacaoIncidenteConsumer {
 	private void notificar(NotificacaoEmitidaIncidenteDTO notificacaoEmitidaIncidenteDTO) {
 		
 		for (Integer usuarioId : notificacaoEmitidaIncidenteDTO.getIdsUsuariosImpactados()) {
+			usuarioId = 3;
 			User usuario = findUsuarioById(usuarioId);
-			EmailModel emailModel = new EmailModel();
-			
-			emailModel.setOwnerRef(usuario.getName());
-			emailModel.setOwnerRef(EMAIL_FROM);
-			emailModel.setEmailTo(usuario.getEmail());
-			emailModel.setText(MSG_MOCK_EMAIL);
-			emailModel.setSubject(SUBJECT);
+			EmailModel emailModel = criarEmail(usuario);
 			enviarEmail(emailModel);
 			
-			NotificacaoEnvioEmailDTO emissaoNotificacaoIncidenteDTO = NotificacaoEnvioEmailDTO
-					.builder()
-					.incidenteId(notificacaoEmitidaIncidenteDTO.getIncidenteId())
-					.dataHoraEnvioEmail("2023-04-21T15:43:14.506133")
-					.build();
+			NotificacaoEnvioEmailDTO emissaoNotificacaoIncidenteDTO = new NotificacaoEnvioEmailDTO();
+					
+			emissaoNotificacaoIncidenteDTO.setIncidenteId(notificacaoEmitidaIncidenteDTO.getIncidenteId());
+			emissaoNotificacaoIncidenteDTO.setDataHoraEnvioEmail(LocalDateTime.now());
+			
+			/*TODO: No momento foi utilizando a comunicaão via endpoint mas no futuro será mensageria
 			try {
 				emissaoNotificacaoEnvioEmail.emitirNotificacaoIncidente(emissaoNotificacaoIncidenteDTO);
 			} catch (JsonProcessingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
+			
+			gravarNotificacao(usuario, notificacaoEmitidaIncidenteDTO);
 			
 		}
 		
+	}
+	
+	private void confirmarEnvioEmail(Integer incidenteId) {
+		NotificacaoEnvioEmailDTO notificacaoEnvioEmailDTO = NotificacaoEnvioEmailDTO.builder().dataHoraEnvioEmail(LocalDateTime.now()).build();
+		String confirmarEvioEmailAoEmitirNotificacaoIncidente = incidenteFeignClient.confirmarEnvioEmail(incidenteId,notificacaoEnvioEmailDTO).getBody();
+		System.out.println("Confirmando o envio do email");
+	}
+	
+	private void gravarNotificacao(User usuario,NotificacaoEmitidaIncidenteDTO notificacaoEmitidaIncidenteDTO) {
+		Notificacao notificacao = Notificacao
+									.builder()
+									.nomeImpactado(usuario.getName())
+									.email(usuario.getEmail())
+									.incidenteId(notificacaoEmitidaIncidenteDTO.getIncidenteId())
+									.incidenteTitulo(notificacaoEmitidaIncidenteDTO.getIncidenteTitulo())
+									.tipoIncidente(notificacaoEmitidaIncidenteDTO.getTipoIncidente().getDescricao())
+									.areaNome(notificacaoEmitidaIncidenteDTO.getAreaNome())
+									.dataHoraNotificacao(LocalDateTime.now())
+									.build();
+		
+		notificacaoService.criar(notificacao);
+		
+	}
+	
+	private EmailModel criarEmail(User usuario) {
+		EmailModel emailModel = new EmailModel();
+		
+		emailModel.setOwnerRef(usuario.getName());
+		emailModel.setOwnerRef(EMAIL_FROM);
+		emailModel.setEmailTo(usuario.getEmail());
+		emailModel.setText(MSG_MOCK_EMAIL);
+		emailModel.setSubject(SUBJECT);
+		
+		return emailModel;
 	}
 	
 	public void enviarEmail(EmailModel emailModel) {
