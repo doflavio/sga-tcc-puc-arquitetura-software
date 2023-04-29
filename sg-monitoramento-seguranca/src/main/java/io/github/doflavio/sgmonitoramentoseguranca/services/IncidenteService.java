@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import io.github.doflavio.sgmonitoramentoseguranca.domains.dtos.EmissaoNotificacaoIncidenteDTO;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.dtos.NotificacaoIncidenteDTO;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.dtos.IncidenteDTOAtualizacao;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.dtos.IncidenteDTOCriacao;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.dtos.NotificacaoEnvioEmailDTO;
@@ -144,7 +144,7 @@ public class IncidenteService {
 		List<Integer> idsUsuariosImpactados = areaIncidente.getImpactados().stream().map(i -> i.getUsuarioId()).collect(Collectors.toList());
 		
 		
-		EmissaoNotificacaoIncidenteDTO notificacao = EmissaoNotificacaoIncidenteDTO
+		NotificacaoIncidenteDTO notificacao = NotificacaoIncidenteDTO
 																		.builder()
 																		.protocoloEmissao(UUID.randomUUID())
 																		.incidenteId(incidente.getId())

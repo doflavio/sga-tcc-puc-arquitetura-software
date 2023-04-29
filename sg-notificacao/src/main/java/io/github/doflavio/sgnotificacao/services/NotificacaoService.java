@@ -9,7 +9,7 @@ import io.github.doflavio.sgnotificacao.models.Notificacao;
 import io.github.doflavio.sgnotificacao.repositories.NotificacaoRepository;
 
 @Service
-public class NotificacaolService {
+public class NotificacaoService {
 
     @Autowired
     NotificacaoRepository notificacaoRepository;

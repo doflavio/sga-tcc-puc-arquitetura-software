@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class EmissaoNotificacaoEnvioEmail {
+public class EmissaoNotificacaoEnvioEmailPublisher {
 
 	@Autowired
 	private final RabbitTemplate rabbitTemplate;
@@ -23,10 +23,11 @@ public class EmissaoNotificacaoEnvioEmail {
 	//private final Queue queueEmissaoNotificacaoEnvioEmail;
 	
 	
+	//TODO: Por enquando não está sendoutilizado
 	public void emitirNotificacaoIncidente(NotificacaoEnvioEmailDTO emissaoNotificacaoIncidenteDTO) throws JsonProcessingException {
 		var json = convertIntoJson(emissaoNotificacaoIncidenteDTO);
 		//rabbitTemplate.convertAndSend(queueEmissaoNotificacaoEnvioEmail.getName(),json);
-		rabbitTemplate.convertAndSend("ms.sg.notificacao.envio.email",json);
+		//rabbitTemplate.convertAndSend("ms.sg.notificacao.envio.email",json);
 	}
 	
 	private String convertIntoJson(NotificacaoEnvioEmailDTO emissaoNotificacaoIncidenteDTO) throws JsonProcessingException{

@@ -1,4 +1,4 @@
-package io.github.doflavio.sgnotificacao.dtos;
+package io.github.doflavio.sgmonitoramentoseguranca.domains.dtos;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -10,37 +10,23 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
-import io.github.doflavio.sgnotificacao.enums.TipoIncidente;
-import lombok.AllArgsConstructor;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.enums.incidente.TipoIncidente;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class NotificacaoEmitidaIncidenteDTO {
+public class NotificacaoIncidenteDTO {
 	private UUID protocoloEmissao;
 	private Integer incidenteId;
 	private String incidenteTitulo; 
 	private TipoIncidente tipoIncidente;
-	//private String tipoIncidente;
-	
 	@JsonSerialize(using = LocalDateTimeSerializer.class)
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	private LocalDateTime dataHoraIncidente;
-	//Contorno momentâneo
-	//private String dataHoraIncidente;
-	
 	private String areaNome;
 	private List<Integer> idsUsuariosImpactados = new ArrayList<>();
 	
-	/*
-	public TipoIncidente getTipoIncidente() {
-		if(this.tipoIncidente != null && !this.tipoIncidente.isBlank()) {
-			return TipoIncidente.toEnum(tipoIncidente);
-		}
-		throw new IllegalArgumentException("TipoIncidente inválido");
-	}*/
 }
+//TODO: Jackson
+//https://learnersbucket.com/examples/java/serialize-deserialize-java-8-java-time-with-jackson-json-mapper/

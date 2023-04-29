@@ -34,9 +34,6 @@ public class EmailService {
             emailModel.setEmailFrom("doflavio@gmail.com");
             message.setFrom(emailModel.getEmailFrom());
             message.setTo(emailModel.getEmailTo());
-            //message.setTo("doflavio.web@gmail.com");
-            
-            //message.setReplyTo("doflavio.web@gmail.com");
             message.setSubject(emailModel.getSubject());
             message.setText(emailModel.getText());
             emailSender.send(message);

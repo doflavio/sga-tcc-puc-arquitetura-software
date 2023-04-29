@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.github.doflavio.sgmonitoramentoseguranca.domains.dtos.EmissaoNotificacaoIncidenteDTO;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.dtos.NotificacaoIncidenteDTO;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -18,12 +18,12 @@ public class EmissaoNotificacaoIncidentePublisher {
 	private final Queue queueEmissaoNotificacaoIncidente;
 	
 	
-	public void emitirNotificacaoIncidente(EmissaoNotificacaoIncidenteDTO emissaoNotificacaoIncidenteDTO) throws JsonProcessingException {
+	public void emitirNotificacaoIncidente(NotificacaoIncidenteDTO emissaoNotificacaoIncidenteDTO) throws JsonProcessingException {
 		var json = convertIntoJson(emissaoNotificacaoIncidenteDTO);
 		rabbitTemplate.convertAndSend(queueEmissaoNotificacaoIncidente.getName(),json);
 	}
 	
-	private String convertIntoJson(EmissaoNotificacaoIncidenteDTO emissaoNotificacaoIncidenteDTO) throws JsonProcessingException{
+	private String convertIntoJson(NotificacaoIncidenteDTO emissaoNotificacaoIncidenteDTO) throws JsonProcessingException{
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.writeValueAsString(emissaoNotificacaoIncidenteDTO);
 	}

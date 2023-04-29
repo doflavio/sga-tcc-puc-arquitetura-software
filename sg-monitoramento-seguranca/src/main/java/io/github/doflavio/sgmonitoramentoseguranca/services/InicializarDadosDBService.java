@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.github.doflavio.sgmonitoramentoseguranca.config.Mocks;
-import io.github.doflavio.sgmonitoramentoseguranca.domains.dtos.EmissaoNotificacaoIncidenteDTO;
+import io.github.doflavio.sgmonitoramentoseguranca.domains.dtos.NotificacaoIncidenteDTO;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.dtos.IncidenteDTOCriacao;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Area;
 import io.github.doflavio.sgmonitoramentoseguranca.domains.entities.Atividade;
@@ -362,7 +362,7 @@ public class InicializarDadosDBService {
 		
 		List<Integer> idsUsuariosImpactados = Arrays.asList(3);
 		
-		EmissaoNotificacaoIncidenteDTO notificacao = EmissaoNotificacaoIncidenteDTO
+		NotificacaoIncidenteDTO notificacao = NotificacaoIncidenteDTO
 																		.builder()
 																		.protocoloEmissao(UUID.randomUUID())
 																		.incidenteId(incidente.getId())

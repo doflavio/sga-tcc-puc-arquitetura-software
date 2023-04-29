@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.github.doflavio.sgnotificacao.models.Notificacao;
-import io.github.doflavio.sgnotificacao.services.NotificacaolService;
+import io.github.doflavio.sgnotificacao.services.NotificacaoService;
 
 @RestController
 @RequestMapping(value = "/notificacoes")
 public class NotificacaoController {
 
 	@Autowired
-	NotificacaolService notificacaolService;
+	NotificacaoService notificacaolService;
 	
 	@GetMapping
 	public ResponseEntity<List<Notificacao>>findAll() {
