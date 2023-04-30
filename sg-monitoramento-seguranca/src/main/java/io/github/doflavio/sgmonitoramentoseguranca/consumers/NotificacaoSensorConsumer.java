@@ -24,7 +24,7 @@ public class NotificacaoSensorConsumer {
 	@Autowired
 	private ModelMapper modelMapper;
 	
-	@RabbitListener(queues = "${mq.queues.notificacao.sensor.envio.valor}")
+	//@RabbitListener(queues = "${mq.queues.notificacao.sensor.envio.valor}")
 	public void receberNotificacaoIncidente(@Payload String payload){
 		try {
 			System.out.println(payload);

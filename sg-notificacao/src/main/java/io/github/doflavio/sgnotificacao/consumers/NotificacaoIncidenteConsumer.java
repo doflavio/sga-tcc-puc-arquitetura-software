@@ -74,7 +74,6 @@ public class NotificacaoIncidenteConsumer {
 	private void notificar(NotificacaoIncidenteDTO notificacaoEmitidaIncidenteDTO) {
 		
 		for (Integer usuarioId : notificacaoEmitidaIncidenteDTO.getIdsUsuariosImpactados()) {
-			usuarioId = 3;
 			User usuario = findUsuarioById(usuarioId);
 			EmailModel emailModel = criarEmail(usuario);
 			enviarEmail(emailModel);

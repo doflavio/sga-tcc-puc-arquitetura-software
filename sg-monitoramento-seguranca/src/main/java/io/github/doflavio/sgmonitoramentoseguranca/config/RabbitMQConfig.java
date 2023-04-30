@@ -38,28 +38,5 @@ public class RabbitMQConfig {
 		mapper.registerModule(new JavaTimeModule());
 		return new Jackson2JsonMessageConverter(mapper);
 	}
-	
-	/*
-	@Bean
-	public ObjectMapper objectMapper() {
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		objectMapper.registerModule(new JavaTimeModule());
-		return objectMapper;
-	}*/
-	
-	/*
-	@Bean
-    public ObjectMapper objectMapper() {
-        return JsonMapper.builder()
-                .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS, true)
-                .configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false)
-                .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-                .configure(DeserializationFeature.READ_ENUMS_USING_TO_STRING, true)
-                .addModule(new JavaTimeModule())
-                .findAndAddModules()
-                .build();
-    }
-    */
+
 }

@@ -26,7 +26,7 @@ public class NotificacaoEnvioEmailConsumer {
 	@Autowired
 	private IncidenteService incidenteService;
 	
-	@RabbitListener(queues = "${mq.queues.notificacao.envio.email}")
+	//@RabbitListener(queues = "${mq.queues.notificacao.envio.email}")
 	public void receberNotificacaoIncidente(@Payload String payload){
 		try {
 			NotificacaoEnvioEmailDTO notificacaoEnvioEmailDTO = convertIntoEmissaoNoificacaoIncidenteDTO(payload);
