@@ -21,12 +21,13 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 @Configuration
 public class RabbitMQConfig {
 	
-	@Value("${mq.queues.notificacao.incidente}")
+	//@Value("${mq.queues.notificacao.incidente}")
     private String filaNotificacaoIncidente;
 
 	@Bean
 	public Queue queueNotificacaoIncidente() {
-		return new Queue(filaNotificacaoIncidente,true);
+		//return new Queue(filaNotificacaoIncidente,true);
+		return new Queue("ms.sg.notificacao.incidente",true);
 	}
 	
 	
